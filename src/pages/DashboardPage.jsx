@@ -1,5 +1,6 @@
 import Navbar from '../components/layout/Navbar';
 import DeviceList from '../components/dashboard/DeviceList';
+import IncomingInvites from '../components/dashboard/IncomingInvites';
 
 export default function DashboardPage() {
   return (
@@ -8,6 +9,9 @@ export default function DashboardPage() {
 
       {/* Main content */}
       <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        {/* Pending Invites Alert Area */}
+        <IncomingInvites />
+
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white tracking-tight">

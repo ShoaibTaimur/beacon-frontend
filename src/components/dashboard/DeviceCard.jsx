@@ -1,11 +1,15 @@
 import { useState } from 'react';
 import { removeDevice } from '../../services/api';
 import Button from '../ui/Button';
+import TrustPanel from './TrustPanel';
+import HistoryPanel from './HistoryPanel';
 
 export default function DeviceCard({ device, onRemoved }) {
   const [removing, setRemoving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showTrust, setShowTrust] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   const handleRemove = async () => {
     if (!confirmDelete) {
@@ -115,8 +119,26 @@ export default function DeviceCard({ device, onRemoved }) {
           </svg>
         </div>
 
-        {/* Live Status indicator */}
+        {/* Share + History + Status */}
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowHistory(true)}
+            className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-cyan-500/15 border border-white/5 hover:border-cyan-500/30 text-slate-500 hover:text-cyan-400 transition-all cursor-pointer"
+            title="Device history logs"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </button>
+          <button
+            onClick={() => setShowTrust(true)}
+            className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-cyan-500/15 border border-white/5 hover:border-cyan-500/30 text-slate-500 hover:text-cyan-400 transition-all cursor-pointer"
+            title="Share device"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+            </svg>
+          </button>
           <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">
             {device.isOnline ? 'Active' : 'Offline'}
           </span>
@@ -328,6 +350,22 @@ export default function DeviceCard({ device, onRemoved }) {
           {confirmDelete ? 'Confirm Remove' : 'Remove Device'}
         </Button>
       </div>
+
+      {/* Trust Panel Modal */}
+      <TrustPanel
+        deviceId={device.id}
+        deviceName={device.deviceName}
+        isOpen={showTrust}
+        onClose={() => setShowTrust(false)}
+      />
+
+      {/* History Panel Modal */}
+      <HistoryPanel
+        deviceId={device.id}
+        deviceName={device.deviceName}
+        isOpen={showHistory}
+        onClose={() => setShowHistory(false)}
+      />
     </div>
   );
 }

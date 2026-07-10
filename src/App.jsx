@@ -4,6 +4,7 @@ import ProtectedRoute from './components/layout/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import SharedDevicesPage from './pages/SharedDevicesPage';
 
 function App() {
   return (
@@ -17,6 +18,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/shared"
+            element={
+              <ProtectedRoute>
+                <SharedDevicesPage />
               </ProtectedRoute>
             }
           />
