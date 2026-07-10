@@ -5,6 +5,7 @@ import Button from '../ui/Button';
 export default function DeviceCard({ device, onRemoved }) {
   const [removing, setRemoving] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   const handleRemove = async () => {
     if (!confirmDelete) {
@@ -91,58 +92,82 @@ export default function DeviceCard({ device, onRemoved }) {
   };
 
   return (
-    <div className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 transition-all duration-300 hover:bg-white/8 hover:border-white/15 hover:shadow-lg hover:shadow-cyan-500/5">
-      {/* Status indicator — pulse for online */}
-      <div className="absolute top-4 right-4">
-        {device.isOnline ? (
-          <div className="relative">
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse" />
-          </div>
-        ) : (
-          <div className="w-2.5 h-2.5 rounded-full bg-slate-600 ring-4 ring-slate-600/20" />
-        )}
+    <div className="group relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 transition-all duration-500 hover:bg-white/10 hover:border-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/10 animate-slide-up">
+      {/* Background radial highlight */}
+      <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      {/* Header */}
+      <div className="flex items-start justify-between mb-4">
+        {/* Device Icon w/ dynamic color based on status */}
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/20 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-300">
+          <svg
+            className="w-6 h-6 text-cyan-400 group-hover:animate-pulse"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"
+            />
+          </svg>
+        </div>
+
+        {/* Live Status indicator */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">
+            {device.isOnline ? 'Active' : 'Offline'}
+          </span>
+          {device.isOnline ? (
+            <div className="relative flex h-2.5 w-2.5">
+              <span className="animate-pulse-ring absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 shadow-md shadow-emerald-500/50" />
+            </div>
+          ) : (
+            <div className="h-2.5 w-2.5 rounded-full bg-slate-600 ring-2 ring-slate-600/20" />
+          )}
+        </div>
       </div>
 
-      {/* Device icon */}
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/10 flex items-center justify-center mb-4">
-        <svg
-          className="w-6 h-6 text-cyan-400"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={1.5}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3"
-          />
-        </svg>
+      {/* Name and Model */}
+      <div className="mb-4">
+        <h3 className="text-white font-bold text-lg leading-tight truncate group-hover:text-cyan-300 transition-colors duration-300">
+          {device.deviceName}
+        </h3>
+        <p className="text-xs text-slate-400 mt-0.5 truncate">
+          {device.manufacturer || 'Unknown Manufacturer'} • {device.model || 'Android Device'}
+        </p>
       </div>
 
-      {/* Device name */}
-      <h3 className="text-white font-semibold text-lg mb-1 truncate">
-        {device.deviceName}
-      </h3>
-
-      <div className="space-y-3 mt-3">
-        {/* Battery */}
-        <div>
-          <div className="flex items-center justify-between text-sm mb-1">
-            <span className="text-slate-500 flex items-center gap-1.5">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M3.75 18h15A2.25 2.25 0 0021 15.75v-6a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 9.75v6A2.25 2.25 0 003.75 18z" />
-              </svg>
+      {/* Visual System Metrics */}
+      <div className="space-y-4">
+        {/* Battery Container */}
+        <div className="bg-slate-900/40 border border-white/5 rounded-xl p-3 hover:bg-slate-900/60 transition-colors duration-300">
+          <div className="flex items-center justify-between text-sm mb-2">
+            <span className="text-slate-400 flex items-center gap-2 font-medium">
+              <div className="w-5 h-3 border border-slate-500 rounded-[3px] p-[1px] relative flex items-center">
+                <div 
+                  className={`h-full rounded-[1px] transition-all duration-500 ${
+                    device.batteryLevel == null ? 'bg-slate-500' :
+                    device.batteryLevel <= 15 ? 'bg-red-500' :
+                    device.batteryLevel <= 40 ? 'bg-amber-400' : 'bg-emerald-500'
+                  }`}
+                  style={{ width: `${device.batteryLevel ?? 0}%` }}
+                />
+                <div className="w-[1.5px] h-1.5 bg-slate-500 absolute -right-[2.5px] rounded-r-[1px]" />
+              </div>
               Battery
               {device.isCharging && (
-                <span className="text-amber-400 text-xs">⚡</span>
+                <span className="text-amber-400 text-xs animate-bounce">⚡</span>
               )}
             </span>
-            <span className={`font-semibold ${batteryTextColor(device.batteryLevel)}`}>
+            <span className={`font-bold ${batteryTextColor(device.batteryLevel)}`}>
               {device.batteryLevel != null ? `${device.batteryLevel}%` : '—'}
             </span>
           </div>
-          <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${batteryColor(device.batteryLevel)}`}
               style={{ width: `${device.batteryLevel ?? 0}%` }}
@@ -150,88 +175,154 @@ export default function DeviceCard({ device, onRemoved }) {
           </div>
         </div>
 
-        {/* Storage */}
-        <div>
-          <div className="flex items-center justify-between text-sm mb-1">
-            <span className="text-slate-500">Storage</span>
-            <span className="text-slate-300 text-xs">
-              {formatBytes(device.storageUsed)} / {formatBytes(device.storageTotal)}
-            </span>
+        {/* RAM & Storage Dual Progress Bar layout */}
+        <div className="grid grid-cols-2 gap-3">
+          {/* Storage */}
+          <div className="bg-slate-900/40 border border-white/5 rounded-xl p-3">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-slate-400 font-medium">Storage</span>
+              <span className="text-slate-400 font-semibold">
+                {formatBytes(device.storageUsed)}
+              </span>
+            </div>
+            <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${
+                  usageBarPercent(device.storageUsed, device.storageTotal) > 90 ? 'bg-red-500' : 'bg-cyan-400'
+                }`}
+                style={{ width: `${usageBarPercent(device.storageUsed, device.storageTotal)}%` }}
+              />
+            </div>
+            <div className="text-[10px] text-slate-500 mt-1 text-right">
+              of {formatBytes(device.storageTotal)}
+            </div>
           </div>
-          <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${usageBarPercent(device.storageUsed, device.storageTotal) > 90 ? 'bg-red-500' : 'bg-cyan-400'}`}
-              style={{ width: `${usageBarPercent(device.storageUsed, device.storageTotal)}%` }}
-            />
+
+          {/* RAM */}
+          <div className="bg-slate-900/40 border border-white/5 rounded-xl p-3">
+            <div className="flex items-center justify-between text-xs mb-1.5">
+              <span className="text-slate-400 font-medium">RAM</span>
+              <span className="text-slate-400 font-semibold">
+                {formatBytes(device.ramUsed)}
+              </span>
+            </div>
+            <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500 bg-blue-500"
+                style={{ width: `${usageBarPercent(device.ramUsed, device.ramTotal)}%` }}
+              />
+            </div>
+            <div className="text-[10px] text-slate-500 mt-1 text-right">
+              of {formatBytes(device.ramTotal)}
+            </div>
           </div>
         </div>
 
-        {/* RAM */}
-        <div>
-          <div className="flex items-center justify-between text-sm mb-1">
-            <span className="text-slate-500">RAM</span>
-            <span className="text-slate-300 text-xs">
-              {formatBytes(device.ramUsed)} / {formatBytes(device.ramTotal)}
-            </span>
+        {/* GPS Radar Sweep Section */}
+        <div className="relative h-28 bg-slate-950/60 rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:14px_14px] bg-center" />
+          
+          <div className="absolute w-20 h-20 rounded-full border border-cyan-500/10" />
+          <div className="absolute w-12 h-12 rounded-full border border-cyan-500/15" />
+          <div className="absolute w-4 h-4 rounded-full border border-cyan-500/20" />
+          
+          <div className="absolute w-full h-[1px] bg-white/[0.02]" />
+          <div className="absolute h-full w-[1px] bg-white/[0.02]" />
+          
+          <div 
+            className="absolute w-[200%] h-[200%] origin-center animate-radar-sweep pointer-events-none"
+            style={{
+              background: 'conic-gradient(from 0deg, rgba(34,211,238,0.15) 0deg, transparent 90deg, transparent 360deg)'
+            }}
+          />
+          
+          {device.latitude != null && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${device.latitude},${device.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute flex items-center justify-center group/map z-10 cursor-pointer"
+              style={{ transform: 'translate(10px, -15px)' }}
+            >
+              <span className="absolute w-4 h-4 rounded-full bg-cyan-400/40 animate-ping" />
+              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-white shadow-lg shadow-cyan-400/50" />
+              
+              <span className="absolute bottom-6 bg-slate-900 border border-white/10 text-[10px] text-cyan-300 px-1.5 py-0.5 rounded opacity-0 group-hover/map:opacity-100 transition-opacity duration-200 whitespace-nowrap shadow-xl">
+                Open in Maps
+              </span>
+            </a>
+          )}
+          
+          <div className="absolute bottom-2 left-3 flex items-center gap-1.5 text-[9px] text-slate-500 font-mono tracking-wider">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse" />
+            <span>GPS BEACON</span>
           </div>
-          <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full transition-all duration-500 bg-blue-500"
-              style={{ width: `${usageBarPercent(device.ramUsed, device.ramTotal)}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Info row: Sound, Android, Brand */}
-        <div className="flex items-center gap-3 flex-wrap pt-1">
-          {device.soundMode && (
-            <span className="flex items-center gap-1 text-xs text-slate-400 bg-white/5 px-2 py-0.5 rounded-full">
-              {soundModeIcon(device.soundMode)}
-              {device.soundMode.charAt(0).toUpperCase() + device.soundMode.slice(1)}
-            </span>
-          )}
-          {device.androidVersion && (
-            <span className="text-xs text-cyan-400/80 bg-cyan-400/5 px-2 py-0.5 rounded-full font-medium">
-              Android {device.androidVersion}
-            </span>
-          )}
-          {device.manufacturer && (
-            <span className="text-xs text-slate-500">
-              {device.manufacturer}
-            </span>
-          )}
-        </div>
-
-        {/* Location */}
-        <div className="flex items-center gap-1.5 text-xs">
-          <svg className={`w-3.5 h-3.5 ${device.latitude != null ? 'text-emerald-400' : 'text-slate-700'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-          </svg>
-          <span className={device.latitude != null ? 'text-slate-400' : 'text-slate-700'}>
+          
+          <div className="absolute bottom-2 right-3 text-[9px] text-slate-400 font-mono">
             {device.latitude != null
-              ? `${device.latitude.toFixed(4)}, ${device.longitude.toFixed(4)}`
-              : 'No location data'}
-          </span>
+              ? `${device.latitude.toFixed(5)}°N, ${device.longitude.toFixed(5)}°E`
+              : 'NO SIGNAL'}
+          </div>
         </div>
 
-        {/* Last seen */}
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-slate-500">Last seen</span>
-          <span className="text-slate-300 ml-auto">
-            {formatDate(device.lastSeen)}
-          </span>
-        </div>
+        {/* Collapsable details toggle */}
+        <button
+          onClick={() => setShowDetails(!showDetails)}
+          className="w-full flex items-center justify-between text-xs text-slate-400 hover:text-white transition-colors py-1 cursor-pointer font-semibold"
+        >
+          <span>System Parameters</span>
+          <svg
+            className={`w-4 h-4 transition-transform duration-300 ${showDetails ? 'rotate-180 text-cyan-400' : ''}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+          </svg>
+        </button>
+
+        {showDetails && (
+          <div className="space-y-2 bg-slate-900/60 border border-white/5 rounded-xl p-3.5 text-xs animate-fade-in">
+            {device.soundMode && (
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500 flex items-center gap-1.5">
+                  {soundModeIcon(device.soundMode)}
+                  Sound Profile
+                </span>
+                <span className="text-slate-300 font-semibold uppercase tracking-wider text-[10px]">
+                  {device.soundMode}
+                </span>
+              </div>
+            )}
+            
+            {device.androidVersion && (
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Android OS</span>
+                <span className="text-slate-300 font-medium">
+                  Version {device.androidVersion}
+                </span>
+              </div>
+            )}
+
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500">Last Telemetry</span>
+              <span className="text-slate-300">
+                {formatDate(device.lastSeen)}
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* Actions */}
+      {/* Remove device button */}
       <div className="mt-5 pt-4 border-t border-white/5">
         <Button
           variant={confirmDelete ? 'danger' : 'ghost'}
           size="sm"
           onClick={handleRemove}
           loading={removing}
-          className="w-full"
+          className="w-full text-xs font-semibold cursor-pointer"
           id={`remove-device-${device.id}`}
         >
           {confirmDelete ? 'Confirm Remove' : 'Remove Device'}
