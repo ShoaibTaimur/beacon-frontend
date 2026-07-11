@@ -85,6 +85,7 @@ export default function DeviceList() {
           key={device.id}
           device={device}
           onRemoved={handleDeviceRemoved}
+          onRefreshed={fetchDevices}
         />
       ))}
     </div>
