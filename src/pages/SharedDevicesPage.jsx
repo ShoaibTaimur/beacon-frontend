@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/layout/Navbar';
-import { getSharedDevices } from '../services/api';
+import { getSharedDevices, revokeTrustLink } from '../services/api';
 import Loader from '../components/ui/Loader';
 
 function formatBytes(bytes) {
@@ -41,6 +41,17 @@ export default function SharedDevicesPage() {
       console.error('[SharedDevices]', err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRemove = async (linkId) => {
+    if (!window.confirm('Are you sure you want to stop monitoring this device?')) return;
+    try {
+      await revokeTrustLink(linkId);
+      setDevices((prev) => prev.filter((d) => d.linkId !== linkId));
+    } catch (err) {
+      console.error('[SharedDevices] Failed to remove shared device:', err.message);
+      alert('Failed to remove shared device');
     }
   };
 
@@ -91,7 +102,11 @@ export default function SharedDevicesPage() {
         {!loading && !error && devices.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {devices.map((device) => (
-              <SharedDeviceCard key={device.id || device.linkId} device={device} />
+              <SharedDeviceCard
+                key={device.id || device.linkId}
+                device={device}
+                onRemove={handleRemove}
+              />
             ))}
           </div>
         )}
@@ -106,7 +121,7 @@ export default function SharedDevicesPage() {
   );
 }
 
-function SharedDeviceCard({ device }) {
+function SharedDeviceCard({ device, onRemove }) {
   const hasLocation = device.latitude != null && device.longitude != null;
 
   return (
@@ -126,9 +141,20 @@ function SharedDeviceCard({ device }) {
             </p>
           </div>
         </div>
-        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-purple-500/15 text-purple-400 border border-purple-500/20">
-          {device.role}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase bg-purple-500/15 text-purple-400 border border-purple-500/20">
+            {device.role}
+          </span>
+          <button
+            onClick={() => onRemove(device.linkId)}
+            className="p-1 rounded text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all"
+            title="Remove this shared device"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Info */}
