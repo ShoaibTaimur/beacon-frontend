@@ -43,10 +43,17 @@ export default function SharedDevicesPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    loadSharedDevices();
+    loadSharedDevices(true);
+
+    const interval = setInterval(() => {
+      loadSharedDevices(false);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const loadSharedDevices = async () => {
+  const loadSharedDevices = async (showLoader = false) => {
+    if (showLoader) setLoading(true);
     try {
       const res = await getSharedDevices();
       setDevices(res.data.devices || []);
@@ -54,7 +61,7 @@ export default function SharedDevicesPage() {
       setError('Failed to load shared devices');
       console.error('[SharedDevices]', err.message);
     } finally {
-      setLoading(false);
+      if (showLoader) setLoading(false);
     }
   };
 

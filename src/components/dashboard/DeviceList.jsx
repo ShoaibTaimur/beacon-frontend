@@ -8,7 +8,8 @@ export default function DeviceList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchDevices = async () => {
+  const fetchDevices = async (showLoader = false) => {
+    if (showLoader) setLoading(true);
     try {
       const response = await getDevices();
       setDevices(response.data.devices);
@@ -16,12 +17,18 @@ export default function DeviceList() {
       setError('Failed to load devices');
       console.error('[DeviceList]', err.message);
     } finally {
-      setLoading(false);
+      if (showLoader) setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchDevices();
+    fetchDevices(true);
+
+    const interval = setInterval(() => {
+      fetchDevices(false);
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleDeviceRemoved = (removedId) => {

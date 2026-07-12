@@ -265,6 +265,13 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
         <div className="relative h-28 bg-slate-950/60 rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:14px_14px] bg-center" />
           
+          {device.latitude != null && (
+            <div className="absolute top-2 left-3 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/30 text-[9px] text-cyan-300 font-bold tracking-wide animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              <span>SYNCED {formatLocationTime(device.locationTimestamp).toUpperCase()}</span>
+            </div>
+          )}
+          
           <div className="absolute w-20 h-20 rounded-full border border-cyan-500/10" />
           <div className="absolute w-12 h-12 rounded-full border border-cyan-500/15" />
           <div className="absolute w-4 h-4 rounded-full border border-cyan-500/20" />
@@ -299,12 +306,6 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
           <div className="absolute bottom-2 left-3 flex items-center gap-1.5 text-[9px] text-slate-500 font-mono tracking-wider">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse" />
             <span>GPS BEACON</span>
-            {device.latitude != null && (
-              <>
-                <span className="text-[8px] text-slate-700 font-bold">•</span>
-                <span className="text-[8px] text-cyan-400/80 font-medium">SYNCED {formatLocationTime(device.locationTimestamp).toUpperCase()}</span>
-              </>
-            )}
           </div>
           
           <div className="absolute bottom-2 right-3 text-[9px] text-slate-400 font-mono">
