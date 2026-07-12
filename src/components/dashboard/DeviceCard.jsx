@@ -196,15 +196,12 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
                     device.batteryLevel == null ? 'bg-slate-500' :
                     device.batteryLevel <= 15 ? 'bg-red-500' :
                     device.batteryLevel <= 40 ? 'bg-amber-400' : 'bg-emerald-500'
-                  }`}
+                  } ${device.isCharging ? 'animate-battery-charging' : ''}`}
                   style={{ width: `${device.batteryLevel ?? 0}%` }}
                 />
                 <div className="w-[1.5px] h-1.5 bg-slate-500 absolute -right-[2.5px] rounded-r-[1px]" />
               </div>
               Battery
-              {device.isCharging && (
-                <span className="text-amber-400 text-xs animate-bounce">⚡</span>
-              )}
             </span>
             <span className={`font-bold ${batteryTextColor(device.batteryLevel)}`}>
               {device.batteryLevel != null ? `${device.batteryLevel}%` : '—'}
@@ -212,7 +209,7 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
           </div>
           <div className="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${batteryColor(device.batteryLevel)}`}
+              className={`h-full rounded-full transition-all duration-500 ${batteryColor(device.batteryLevel)} ${device.isCharging ? 'animate-battery-charging' : ''}`}
               style={{ width: `${device.batteryLevel ?? 0}%` }}
             />
           </div>

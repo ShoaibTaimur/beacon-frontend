@@ -186,12 +186,11 @@ function SharedDeviceCard({ device, onRemove }) {
               <span className="text-[10px] text-slate-500 font-medium">Battery</span>
               <span className={`text-xs font-bold ${batteryColorClass(device.batteryLevel)}`}>
                 {device.batteryLevel}%
-                {device.isCharging && ' ⚡'}
               </span>
             </div>
             <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all ${batteryBarColor(device.batteryLevel)}`}
+                className={`h-full rounded-full transition-all ${batteryBarColor(device.batteryLevel)} ${device.isCharging ? 'animate-battery-charging' : ''}`}
                 style={{ width: `${device.batteryLevel}%` }}
               />
             </div>
