@@ -53,6 +53,20 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
     return date.toLocaleDateString();
   };
 
+  const formatLocationTime = (dateStr) => {
+    if (!dateStr) return 'Never';
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diff = now - date;
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(diff / 60000);
+
+    if (seconds < 5) return 'Just now';
+    if (seconds < 60) return `${seconds}s ago`;
+    if (minutes < 60) return `${minutes}m ago`;
+    return formatDate(dateStr);
+  };
+
   const formatBytes = (bytes) => {
     if (bytes == null) return '—';
     const gb = bytes / 1073741824;
@@ -285,6 +299,12 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
           <div className="absolute bottom-2 left-3 flex items-center gap-1.5 text-[9px] text-slate-500 font-mono tracking-wider">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse" />
             <span>GPS BEACON</span>
+            {device.latitude != null && (
+              <>
+                <span className="text-[8px] text-slate-700 font-bold">•</span>
+                <span className="text-[8px] text-cyan-400/80 font-medium">SYNCED {formatLocationTime(device.locationTimestamp).toUpperCase()}</span>
+              </>
+            )}
           </div>
           
           <div className="absolute bottom-2 right-3 text-[9px] text-slate-400 font-mono">

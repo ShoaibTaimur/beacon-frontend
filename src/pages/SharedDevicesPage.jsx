@@ -23,6 +23,20 @@ function batteryBarColor(level) {
   return 'bg-emerald-500';
 }
 
+function formatLocationTime(dateStr) {
+  if (!dateStr) return 'Never';
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diff = now - date;
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(diff / 60000);
+
+  if (seconds < 5) return 'Just now';
+  if (seconds < 60) return `${seconds}s ago`;
+  if (minutes < 60) return `${minutes}m ago`;
+  return date.toLocaleDateString();
+}
+
 export default function SharedDevicesPage() {
   const [devices, setDevices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -205,15 +219,22 @@ function SharedDeviceCard({ device, onRemove }) {
             href={`https://www.google.com/maps/search/?api=1&query=${device.latitude},${device.longitude}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 p-2 bg-white/[0.02] rounded-lg border border-white/5 hover:border-cyan-500/20 transition-colors"
+            className="flex items-center justify-between p-2 bg-white/[0.02] rounded-lg border border-white/5 hover:border-cyan-500/20 transition-colors"
           >
-            <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" />
-            </svg>
-            <span className="text-[10px] text-slate-400 font-mono">
-              {device.latitude?.toFixed(5)}°N, {device.longitude?.toFixed(5)}°E
-            </span>
+            <div className="flex items-center gap-2">
+              <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" />
+              </svg>
+              <span className="text-[10px] text-slate-400 font-mono">
+                {device.latitude?.toFixed(5)}°N, {device.longitude?.toFixed(5)}°E
+              </span>
+            </div>
+            {device.locationTimestamp && (
+              <span className="text-[8px] text-cyan-400/80 font-mono font-semibold uppercase">
+                {formatLocationTime(device.locationTimestamp)}
+              </span>
+            )}
           </a>
         )}
 
