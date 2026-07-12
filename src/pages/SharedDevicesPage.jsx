@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import { getSharedDevices, revokeTrustLink } from '../services/api';
 import Loader from '../components/ui/Loader';
@@ -221,14 +222,12 @@ function SharedDeviceCard({ device, onRemove }) {
         )}
 
         {hasLocation && (
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${device.latitude},${device.longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-between p-2 bg-white/[0.02] rounded-lg border border-white/5 hover:border-cyan-500/20 transition-colors"
+          <Link
+            to={`/devices/${device.id}/map`}
+            className="flex items-center justify-between p-2 bg-white/[0.02] rounded-lg border border-white/5 hover:border-cyan-500/20 transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <svg className="w-3.5 h-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" />
               </svg>
@@ -241,7 +240,7 @@ function SharedDeviceCard({ device, onRemove }) {
                 {formatLocationTime(device.locationTimestamp)}
               </span>
             )}
-          </a>
+          </Link>
         )}
 
         {device.soundMode && (

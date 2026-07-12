@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { removeDevice, ringDevice, stopRingDevice, locateDevice, refreshDevice, updateOwnerMessage } from '../../services/api';
 import Button from '../ui/Button';
 import TrustPanel from './TrustPanel';
@@ -284,10 +285,8 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
           />
           
           {device.latitude != null && (
-            <a
-              href={`https://www.google.com/maps/search/?api=1&query=${device.latitude},${device.longitude}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to={`/devices/${device.id}/map`}
               className="absolute flex items-center justify-center group/map z-10 cursor-pointer"
               style={{ transform: 'translate(10px, -15px)' }}
             >
@@ -295,9 +294,9 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-white shadow-lg shadow-cyan-400/50" />
               
               <span className="absolute bottom-6 bg-slate-900 border border-white/10 text-[10px] text-cyan-300 px-1.5 py-0.5 rounded opacity-0 group-hover/map:opacity-100 transition-opacity duration-200 whitespace-nowrap shadow-xl">
-                Open in Maps
+                View Timeline Map
               </span>
-            </a>
+            </Link>
           )}
           
           <div className="absolute bottom-2 left-3 flex items-center gap-1.5 text-[9px] text-slate-500 font-mono tracking-wider">

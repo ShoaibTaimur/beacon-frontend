@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import SharedDevicesPage from './pages/SharedDevicesPage';
+import MapTimelinePage from './pages/MapTimelinePage';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/devices/:id/map" element={<MapTimelinePage />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
       </AuthProvider>

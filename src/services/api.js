@@ -8,11 +8,25 @@ const api = axios.create({
   },
 });
 
-// Attach Firebase ID token to every request
+// Attach Firebase ID token to every request (supporting WebView ?token query param bypass)
 api.interceptors.request.use(async (config) => {
+  let token = null;
   const user = auth.currentUser;
+  
   if (user) {
-    const token = await user.getIdToken();
+    token = await user.getIdToken();
+  } else {
+    // Try to extract from URL query parameters (useful in Android WebView)
+    const urlParams = new URLSearchParams(window.location.search);
+    token = urlParams.get('token');
+    if (token) {
+      sessionStorage.setItem('temp_auth_token', token);
+    } else {
+      token = sessionStorage.getItem('temp_auth_token');
+    }
+  }
+
+  if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -43,6 +57,8 @@ export const registerDevice = (data) => api.post('/devices', data);
 export const removeDevice = (id) => api.delete(`/devices/${id}`);
 export const updateFcmToken = (id, fcmToken) =>
   api.patch(`/devices/${id}/fcm-token`, { fcmToken });
+export const getDeviceLocationHistory = (id, date) =>
+  api.get(`/devices/${id}/location-history`, { params: { date } });
 
 // Trust API — Invites
 export const sendTrustInvite = (data) => api.post('/trust/invite', data);
