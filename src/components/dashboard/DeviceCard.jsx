@@ -381,7 +381,7 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
       {/* Remote Command Actions */}
       <div className="mt-4 pt-3 border-t border-white/5">
         <p className="text-[9px] text-slate-600 uppercase tracking-wider font-semibold mb-2">Remote Commands</p>
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-3 gap-2">
           {/* Ring / Stop Ring */}
           <button
             onClick={async () => {

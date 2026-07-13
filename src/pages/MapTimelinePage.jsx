@@ -169,14 +169,22 @@ export default function MapTimelinePage() {
             </div>
 
             {/* Datepicker inside header */}
-            <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto">
+            <div className="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
               <span className="text-xs text-neutral-400">Select Date:</span>
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm text-neutral-200 outline-none focus:border-cyan-500 transition-colors cursor-pointer"
-              />
+              <div className="relative flex items-center gap-2 bg-neutral-900/60 border border-neutral-800 hover:border-cyan-500/50 rounded-xl px-3 py-1.5 transition-all duration-200 cursor-pointer">
+                <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-xs font-semibold text-neutral-200">
+                  {new Date(selectedDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                </span>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
+                />
+              </div>
             </div>
           </div>
         </header>
@@ -188,12 +196,18 @@ export default function MapTimelinePage() {
         <div className={`flex-1 flex flex-col min-h-0 relative ${isApp ? 'h-[55%]' : 'min-h-[400px] md:min-h-0'}`}>
           {/* Header overlay for App WebView mode */}
           {isApp && (
-            <div className="absolute top-4 left-4 z-40 flex items-center gap-2 bg-neutral-950/80 backdrop-blur-md px-3 py-2 rounded-xl border border-white/5 shadow-2xl">
+            <div className="absolute top-4 left-4 z-[1010] flex items-center gap-2 bg-neutral-950/90 backdrop-blur-md px-3 py-2 rounded-2xl border border-white/10 shadow-2xl hover:border-cyan-500/50 transition-all duration-200 cursor-pointer">
+              <svg className="w-4 h-4 text-cyan-400 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="text-xs font-bold text-neutral-100">
+                {new Date(selectedDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+              </span>
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-transparent text-sm font-bold text-white outline-none border-none cursor-pointer"
+                className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10"
               />
             </div>
           )}
