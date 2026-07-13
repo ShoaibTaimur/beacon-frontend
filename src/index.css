@@ -29,6 +29,7 @@
     background-color: var(--color-slate-950);
     color: white;
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
   /* Scrollbar */
