@@ -2,6 +2,9 @@ import axios from 'axios';
 import { auth } from './firebase';
 
 const getBaseURL = () => {
+  if (window.location.hostname === 'beacon.taimur.dev') {
+    return 'https://beacon-backend-two.vercel.app/api';
+  }
   const envUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
   if (window.location.hostname === '10.0.2.2') {
     return envUrl.replace('localhost', '10.0.2.2');
