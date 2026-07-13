@@ -8,7 +8,7 @@ export default function DashboardPage() {
       <Navbar />
 
       {/* Main content */}
-      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-slide-up">
         {/* Pending Invites Alert Area */}
         <IncomingInvites />
 

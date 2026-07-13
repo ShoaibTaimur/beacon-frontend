@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { removeDevice, ringDevice, stopRingDevice, locateDevice, refreshDevice, updateOwnerMessage } from '../../services/api';
+import { removeDevice, ringDevice, stopRingDevice, locateDevice, refreshDevice } from '../../services/api';
 import Button from '../ui/Button';
 import TrustPanel from './TrustPanel';
 import HistoryPanel from './HistoryPanel';
@@ -14,9 +14,6 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
   const [ringing, setRinging] = useState(false);
   const [locating, setLocating] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [showMessageEditor, setShowMessageEditor] = useState(false);
-  const [ownerMsg, setOwnerMsg] = useState(device.ownerMessage || '');
-  const [savingMsg, setSavingMsg] = useState(false);
   const [commandError, setCommandError] = useState(null);
 
   const handleRemove = async () => {
@@ -474,57 +471,7 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
             )}
             <span className="text-[8px] font-bold uppercase">Refresh</span>
           </button>
-
-          {/* Owner Message */}
-          <button
-            onClick={() => setShowMessageEditor(!showMessageEditor)}
-            className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
-              showMessageEditor
-                ? 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400'
-                : 'bg-white/[0.03] border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400'
-            }`}
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
-            </svg>
-            <span className="text-[8px] font-bold uppercase">Message</span>
-          </button>
         </div>
-
-        {/* Owner Message Editor */}
-        {showMessageEditor && (
-          <div className="mt-3 p-3 bg-slate-900/60 border border-white/5 rounded-xl space-y-2 animate-fade-in">
-            <p className="text-[10px] text-slate-500 font-medium">Shown after ring stops:</p>
-            <textarea
-              value={ownerMsg}
-              onChange={(e) => setOwnerMsg(e.target.value)}
-              maxLength={500}
-              rows={3}
-              placeholder="This device belongs to...&#10;If found, contact: +880..."
-              className="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40 resize-none"
-            />
-            <div className="flex items-center justify-between">
-              <span className="text-[9px] text-slate-600">{ownerMsg.length}/500</span>
-              <button
-                onClick={async () => {
-                  setSavingMsg(true);
-                  try {
-                    await updateOwnerMessage(device.id, ownerMsg);
-                    setShowMessageEditor(false);
-                  } catch (err) {
-                    setCommandError(err.response?.data?.error || 'Failed to save message');
-                  } finally {
-                    setSavingMsg(false);
-                  }
-                }}
-                disabled={savingMsg}
-                className="px-3 py-1 rounded-lg text-[10px] font-semibold bg-gradient-to-r from-cyan-500 to-blue-600 text-white hover:from-cyan-400 hover:to-blue-500 transition-all disabled:opacity-50 cursor-pointer"
-              >
-                {savingMsg ? 'Saving...' : 'Save Message'}
-              </button>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Remove device button */}

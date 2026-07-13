@@ -88,11 +88,9 @@ export const revokeTrustLink = (linkId) => api.delete(`/trust/${linkId}`);
 // Trust API — Device History
 export const getDeviceHistory = (deviceId, page = 1) => api.get(`/trust/devices/${deviceId}/history?page=${page}`);
 
-// Remote Commands API
 export const ringDevice = (id) => api.post(`/devices/${id}/ring`);
 export const stopRingDevice = (id) => api.post(`/devices/${id}/stop-ring`);
 export const locateDevice = (id) => api.post(`/devices/${id}/locate`);
 export const refreshDevice = (id) => api.post(`/devices/${id}/refresh`);
-export const updateOwnerMessage = (id, ownerMessage) => api.patch(`/devices/${id}/owner-message`, { ownerMessage });
 
 export default api;

@@ -81,7 +81,7 @@ export default function SharedDevicesPage() {
     <div className="min-h-screen bg-slate-950">
       <Navbar />
 
-      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-slide-up">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white tracking-tight">
             Shared With Me

@@ -183,7 +183,7 @@ export default function MapTimelinePage() {
       )}
 
       {/* Main Screen Layout */}
-      <main className={`flex-1 flex min-h-0 ${isApp ? 'flex-col p-2 h-full' : 'flex-col md:flex-row p-6 max-w-7xl mx-auto w-full gap-6'}`}>
+      <main className={`flex-1 flex min-h-0 animate-slide-up ${isApp ? 'flex-col p-2 h-full' : 'flex-col md:flex-row p-6 max-w-7xl mx-auto w-full gap-6'}`}>
         {/* Left Side: Map with Bottom Timeline Slider */}
         <div className={`flex-1 flex flex-col min-h-0 relative ${isApp ? 'h-[55%]' : 'min-h-[400px] md:min-h-0'}`}>
           {/* Header overlay for App WebView mode */}
