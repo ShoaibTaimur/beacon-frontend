@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { getDeviceLocationHistory, getDevice } from '../services/api';
 import LocationTimelineMap from '../components/dashboard/LocationTimelineMap';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function MapTimelinePage() {
   const { id } = useParams();
@@ -26,8 +27,24 @@ export default function MapTimelinePage() {
   const [error, setError] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
+  const { user, loading: authLoading } = useAuth();
+
   // Fetch Device details and History
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get('token');
+    const storedToken = sessionStorage.getItem('temp_auth_token');
+    const hasToken = !!(urlToken || storedToken);
+
+    if (authLoading && !hasToken) {
+      return;
+    }
+
+    if (!authLoading && !user && !hasToken) {
+      navigate('/login');
+      return;
+    }
+
     async function loadData() {
       setLoading(true);
       setError(null);
@@ -50,7 +67,7 @@ export default function MapTimelinePage() {
       }
     }
     loadData();
-  }, [id, selectedDate]);
+  }, [id, selectedDate, user, authLoading, navigate]);
 
   // Compute Stays/Stops (>15 min within 50m)
   const stops = useMemo(() => {
@@ -127,11 +144,11 @@ export default function MapTimelinePage() {
   const activePoint = selectedIndex !== null ? history[selectedIndex] : null;
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-white flex flex-col font-sans">
+    <div className={`min-h-screen bg-neutral-950 text-white flex flex-col font-sans ${isApp ? 'h-screen overflow-hidden' : ''}`}>
       {/* Conditionally render header based on isApp flag */}
       {!isApp && (
         <header className="border-b border-neutral-900 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-6 py-3 sm:py-0 min-h-[4rem] flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate('/dashboard')}
@@ -152,13 +169,13 @@ export default function MapTimelinePage() {
             </div>
 
             {/* Datepicker inside header */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between sm:justify-start gap-2 w-full sm:w-auto">
               <span className="text-xs text-neutral-400">Select Date:</span>
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm text-neutral-200 outline-none focus:border-cyan-500 transition-colors"
+                className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-1.5 text-sm text-neutral-200 outline-none focus:border-cyan-500 transition-colors cursor-pointer"
               />
             </div>
           </div>
@@ -166,9 +183,9 @@ export default function MapTimelinePage() {
       )}
 
       {/* Main Screen Layout */}
-      <main className={`flex-1 flex flex-col md:flex-row min-h-0 ${isApp ? 'p-2' : 'p-6 max-w-7xl mx-auto w-full gap-6'}`}>
+      <main className={`flex-1 flex min-h-0 ${isApp ? 'flex-col p-2 h-full' : 'flex-col md:flex-row p-6 max-w-7xl mx-auto w-full gap-6'}`}>
         {/* Left Side: Map with Bottom Timeline Slider */}
-        <div className="flex-1 flex flex-col min-h-[400px] md:min-h-0 relative">
+        <div className={`flex-1 flex flex-col min-h-0 relative ${isApp ? 'h-[55%]' : 'min-h-[400px] md:min-h-0'}`}>
           {/* Header overlay for App WebView mode */}
           {isApp && (
             <div className="absolute top-4 left-4 z-40 flex items-center gap-2 bg-neutral-950/80 backdrop-blur-md px-3 py-2 rounded-xl border border-white/5 shadow-2xl">
@@ -182,7 +199,7 @@ export default function MapTimelinePage() {
           )}
 
           {/* Map Viewer */}
-          <div className="flex-1 min-h-0 relative bg-neutral-900 rounded-2xl border border-neutral-900 overflow-hidden shadow-2xl">
+          <div className={`flex-1 min-h-0 relative bg-neutral-900 rounded-2xl border border-neutral-900 overflow-hidden shadow-2xl flex flex-col w-full ${isApp ? 'h-full' : 'h-[400px] md:h-full'}`}>
             {loading ? (
               <div className="absolute inset-0 flex items-center justify-center bg-neutral-950/80 z-20">
                 <div className="flex flex-col items-center gap-3">
@@ -273,8 +290,8 @@ export default function MapTimelinePage() {
         </div>
 
         {/* Right Side: Stay Points / Stops Timeline List */}
-        <div className={`w-full md:w-80 flex flex-col ${isApp ? 'mt-4' : ''}`}>
-          <div className="bg-neutral-900/40 border border-neutral-900 rounded-2xl p-4 flex-1 flex flex-col min-h-[300px] max-h-[500px] md:max-h-none overflow-hidden shadow-2xl backdrop-blur-md">
+        <div className={`w-full flex flex-col ${isApp ? 'h-[45%] mt-2 min-h-0' : 'md:w-80 mt-4 md:mt-0'}`}>
+          <div className={`bg-neutral-900/40 border border-neutral-900 rounded-2xl p-4 flex-1 flex flex-col overflow-hidden shadow-2xl backdrop-blur-md ${isApp ? 'min-h-0' : 'min-h-[300px] max-h-[500px] md:max-h-none'}`}>
             <div className="flex items-center justify-between mb-4 border-b border-neutral-800 pb-3">
               <h2 className="font-bold text-sm tracking-tight text-neutral-100 flex items-center gap-2">
                 <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

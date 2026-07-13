@@ -311,6 +311,19 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
           </div>
         </div>
 
+        {/* View Location Timeline Button */}
+        {device.latitude != null && (
+          <Link
+            to={`/devices/${device.id}/map`}
+            className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-500/10 to-blue-600/10 hover:from-cyan-500/20 hover:to-blue-600/20 border border-cyan-500/30 hover:border-cyan-500/50 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.05)] hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] active:scale-[0.98] cursor-pointer"
+          >
+            <svg className="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A2 2 0 013 15.487V7.512a2 2 0 011.196-1.812L9 3m0 17l6.764-3.382a2 2 0 001.236-1.813V7.512a2 2 0 00-1.236-1.813L9 3m0 17V3" />
+            </svg>
+            View Location Timeline
+          </Link>
+        )}
+
         {/* Collapsable details toggle */}
         <button
           onClick={() => setShowDetails(!showDetails)}
