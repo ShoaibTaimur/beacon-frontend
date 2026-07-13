@@ -16,6 +16,8 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
   const [refreshing, setRefreshing] = useState(false);
   const [commandError, setCommandError] = useState(null);
 
+  const canExecuteCommands = !device.role || ['manager', 'finder'].includes(device.role);
+
   const handleRemove = async () => {
     if (!confirmDelete) {
       setConfirmDelete(true);
@@ -140,24 +142,28 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
 
         {/* Share + History + Status */}
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowHistory(true)}
-            className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-cyan-500/15 border border-white/5 hover:border-cyan-500/30 text-slate-500 hover:text-cyan-400 transition-all cursor-pointer"
-            title="Device history logs"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </button>
-          <button
-            onClick={() => setShowTrust(true)}
-            className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-cyan-500/15 border border-white/5 hover:border-cyan-500/30 text-slate-500 hover:text-cyan-400 transition-all cursor-pointer"
-            title="Share device"
-          >
-            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
-            </svg>
-          </button>
+          {!device.role && (
+            <>
+              <button
+                onClick={() => setShowHistory(true)}
+                className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-cyan-500/15 border border-white/5 hover:border-cyan-500/30 text-slate-500 hover:text-cyan-400 transition-all cursor-pointer"
+                title="Device history logs"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setShowTrust(true)}
+                className="w-7 h-7 flex items-center justify-center rounded-lg bg-white/5 hover:bg-cyan-500/15 border border-white/5 hover:border-cyan-500/30 text-slate-500 hover:text-cyan-400 transition-all cursor-pointer"
+                title="Share device"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" />
+                </svg>
+              </button>
+            </>
+          )}
           <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-500">
             {device.isOnline ? 'Active' : 'Offline'}
           </span>
@@ -309,7 +315,7 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
         </div>
 
         {/* View Location Timeline Button */}
-        {device.latitude != null && (
+        {device.latitude != null && (!device.role || device.permittedFields?.includes('location')) && (
           <Link
             to={`/devices/${device.id}/map`}
             className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-500/10 to-blue-600/10 hover:from-cyan-500/20 hover:to-blue-600/20 border border-cyan-500/30 hover:border-cyan-500/50 text-cyan-300 hover:text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(6,182,212,0.05)] hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] active:scale-[0.98] cursor-pointer"
@@ -379,114 +385,118 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }) {
       )}
 
       {/* Remote Command Actions */}
-      <div className="mt-4 pt-3 border-t border-white/5">
-        <p className="text-[9px] text-slate-600 uppercase tracking-wider font-semibold mb-2">Remote Commands</p>
-        <div className="grid grid-cols-3 gap-2">
-          {/* Ring / Stop Ring */}
-          <button
-            onClick={async () => {
-              setCommandError(null);
-              setRinging(true);
-              try {
-                if (device.isRinging) {
-                  await stopRingDevice(device.id);
-                } else {
-                  await ringDevice(device.id);
+      {canExecuteCommands && (
+        <div className="mt-4 pt-3 border-t border-white/5">
+          <p className="text-[9px] text-slate-600 uppercase tracking-wider font-semibold mb-2">Remote Commands</p>
+          <div className="grid grid-cols-3 gap-2">
+            {/* Ring / Stop Ring */}
+            <button
+              onClick={async () => {
+                setCommandError(null);
+                setRinging(true);
+                try {
+                  if (device.isRinging) {
+                    await stopRingDevice(device.id);
+                  } else {
+                    await ringDevice(device.id);
+                  }
+                  onRefreshed?.();
+                } catch (err) {
+                  setCommandError(err.response?.data?.error || 'Ring failed');
+                } finally {
+                  setRinging(false);
                 }
-                onRefreshed?.();
-              } catch (err) {
-                setCommandError(err.response?.data?.error || 'Ring failed');
-              } finally {
-                setRinging(false);
-              }
-            }}
-            disabled={ringing}
-            className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
-              device.isRinging
-                ? 'bg-red-500/10 border-red-500/30 hover:bg-red-500/20 text-red-400'
-                : 'bg-white/[0.03] border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400'
-            } disabled:opacity-50`}
-          >
-            {ringing ? (
-              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
-            ) : (
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
-              </svg>
-            )}
-            <span className="text-[8px] font-bold uppercase">{device.isRinging ? 'Stop' : 'Ring'}</span>
-          </button>
+              }}
+              disabled={ringing}
+              className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
+                device.isRinging
+                  ? 'bg-red-500/10 border-red-500/30 hover:bg-red-500/20 text-red-400'
+                  : 'bg-white/[0.03] border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400'
+              } disabled:opacity-50`}
+            >
+              {ringing ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+              )}
+              <span className="text-[8px] font-bold uppercase">{device.isRinging ? 'Stop' : 'Ring'}</span>
+            </button>
 
-          {/* Locate */}
-          <button
-            onClick={async () => {
-              setCommandError(null);
-              setLocating(true);
-              try {
-                await locateDevice(device.id);
-                setTimeout(() => onRefreshed?.(), 3000);
-              } catch (err) {
-                setCommandError(err.response?.data?.error || 'Locate failed');
-              } finally {
-                setLocating(false);
-              }
-            }}
-            disabled={locating}
-            className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer disabled:opacity-50"
-          >
-            {locating ? (
-              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
-            ) : (
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" />
-              </svg>
-            )}
-            <span className="text-[8px] font-bold uppercase">Locate</span>
-          </button>
+            {/* Locate */}
+            <button
+              onClick={async () => {
+                setCommandError(null);
+                setLocating(true);
+                try {
+                  await locateDevice(device.id);
+                  setTimeout(() => onRefreshed?.(), 3000);
+                } catch (err) {
+                  setCommandError(err.response?.data?.error || 'Locate failed');
+                } finally {
+                  setLocating(false);
+                }
+              }}
+              disabled={locating}
+              className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {locating ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" />
+                </svg>
+              )}
+              <span className="text-[8px] font-bold uppercase">Locate</span>
+            </button>
 
-          {/* Refresh */}
-          <button
-            onClick={async () => {
-              setCommandError(null);
-              setRefreshing(true);
-              try {
-                await refreshDevice(device.id);
-                setTimeout(() => onRefreshed?.(), 3000);
-              } catch (err) {
-                setCommandError(err.response?.data?.error || 'Refresh failed');
-              } finally {
-                setRefreshing(false);
-              }
-            }}
-            disabled={refreshing}
-            className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer disabled:opacity-50"
-          >
-            {refreshing ? (
-              <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
-            ) : (
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
-              </svg>
-            )}
-            <span className="text-[8px] font-bold uppercase">Refresh</span>
-          </button>
+            {/* Refresh */}
+            <button
+              onClick={async () => {
+                setCommandError(null);
+                setRefreshing(true);
+                try {
+                  await refreshDevice(device.id);
+                  setTimeout(() => onRefreshed?.(), 3000);
+                } catch (err) {
+                  setCommandError(err.response?.data?.error || 'Refresh failed');
+                } finally {
+                  setRefreshing(false);
+                }
+              }}
+              disabled={refreshing}
+              className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer disabled:opacity-50"
+            >
+              {refreshing ? (
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+              ) : (
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                </svg>
+              )}
+              <span className="text-[8px] font-bold uppercase">Refresh</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Remove device button */}
-      <div className="mt-4 pt-3 border-t border-white/5">
-        <Button
-          variant={confirmDelete ? 'danger' : 'ghost'}
-          size="sm"
-          onClick={handleRemove}
-          loading={removing}
-          className="w-full text-xs font-semibold cursor-pointer"
-          id={`remove-device-${device.id}`}
-        >
-          {confirmDelete ? 'Confirm Remove' : 'Remove Device'}
-        </Button>
-      </div>
+      {!device.role && (
+        <div className="mt-4 pt-3 border-t border-white/5">
+          <Button
+            variant={confirmDelete ? 'danger' : 'ghost'}
+            size="sm"
+            onClick={handleRemove}
+            loading={removing}
+            className="w-full text-xs font-semibold cursor-pointer"
+            id={`remove-device-${device.id}`}
+          >
+            {confirmDelete ? 'Confirm Remove' : 'Remove Device'}
+          </Button>
+        </div>
+      )}
 
       {/* Trust Panel Modal */}
       <TrustPanel

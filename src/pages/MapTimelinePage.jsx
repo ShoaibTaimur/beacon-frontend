@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { getDeviceLocationHistory, getDevice } from '../services/api';
+import { getDeviceLocationHistory, getDevice, getSharedDevice } from '../services/api';
 import LocationTimelineMap from '../components/dashboard/LocationTimelineMap';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -49,14 +49,23 @@ export default function MapTimelinePage() {
       setLoading(true);
       setError(null);
       try {
-        const [historyRes, deviceRes] = await Promise.all([
-          getDeviceLocationHistory(id, selectedDate),
-          getDevice(id).catch(() => null), // Fail gracefully if trust device or not owner
-        ]);
+        let deviceData = null;
+        try {
+          const deviceRes = await getDevice(id);
+          deviceData = deviceRes.data.device;
+        } catch (e) {
+          try {
+            const sharedRes = await getSharedDevice(id);
+            deviceData = sharedRes.data.device;
+          } catch (sharedErr) {
+            console.error('[MapTimeline] Failed to get device details:', sharedErr);
+          }
+        }
 
+        const historyRes = await getDeviceLocationHistory(id, selectedDate);
         setHistory(historyRes.data.history || []);
-        if (deviceRes) {
-          setDevice(deviceRes.data.device);
+        if (deviceData) {
+          setDevice(deviceData);
         }
         setSelectedIndex(null);
       } catch (err) {
