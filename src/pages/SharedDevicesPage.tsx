@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
-import { getSharedDevices, revokeTrustLink } from '../services/api';
+import { getSharedDevices, revokeTrustLink, ringDevice, stopRingDevice, locateDevice, refreshDevice } from '../services/api';
 import Loader from '../components/ui/Loader';
 
 interface SharedDeviceListItem {
@@ -23,6 +23,8 @@ interface SharedDeviceListItem {
   locationTimestamp?: string;
   soundMode?: string;
   lastSeen?: string;
+  isOnline?: boolean;
+  isRinging?: boolean;
 }
 
 function formatBytes(bytes?: number) {
@@ -153,6 +155,7 @@ export default function SharedDevicesPage() {
                 key={device.id || device.linkId}
                 device={device}
                 onRemove={handleRemove}
+                onRefreshed={() => loadSharedDevices(false)}
               />
             ))}
           </div>
@@ -171,9 +174,17 @@ export default function SharedDevicesPage() {
 interface SharedDeviceCardProps {
   device: SharedDeviceListItem;
   onRemove: (linkId: string) => void;
+  onRefreshed?: () => void;
 }
 
-function SharedDeviceCard({ device, onRemove }: SharedDeviceCardProps) {
+function SharedDeviceCard({ device, onRemove, onRefreshed }: SharedDeviceCardProps) {
+  const [ringing, setRinging] = useState(false);
+  const [locating, setLocating] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [commandError, setCommandError] = useState<string | null>(null);
+
+  const deviceId = device.id || device._id;
+  const canExecuteCommands = ['manager', 'finder'].includes(device.role);
   const hasLocation = device.latitude != null && device.longitude != null;
 
   return (
@@ -284,6 +295,111 @@ function SharedDeviceCard({ device, onRemove }: SharedDeviceCardProps) {
           <p className="text-[9px] text-slate-600 text-right">
             Last seen: {new Date(device.lastSeen).toLocaleString()}
           </p>
+        )}
+
+        {/* Command Error */}
+        {commandError && (
+          <div className="mt-3 p-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-medium">
+            {commandError}
+          </div>
+        )}
+
+        {/* Remote Command Actions */}
+        {canExecuteCommands && (
+          <div className="mt-4 pt-3 border-t border-white/5">
+            <p className="text-[9px] text-slate-600 uppercase tracking-wider font-semibold mb-2">Remote Commands</p>
+            <div className="grid grid-cols-3 gap-2">
+              {/* Ring / Stop Ring */}
+              <button
+                onClick={async () => {
+                  setCommandError(null);
+                  setRinging(true);
+                  try {
+                    if (device.isRinging) {
+                      await stopRingDevice(deviceId);
+                    } else {
+                      await ringDevice(deviceId);
+                    }
+                    onRefreshed?.();
+                  } catch (err: any) {
+                    setCommandError(err.response?.data?.error || 'Ring failed');
+                  } finally {
+                    setRinging(false);
+                  }
+                }}
+                disabled={ringing}
+                className={`flex flex-col items-center gap-1 p-2 rounded-xl border transition-all cursor-pointer ${
+                  device.isRinging
+                    ? 'bg-red-500/10 border-red-500/30 hover:bg-red-500/20 text-red-400'
+                    : 'bg-white/[0.03] border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400'
+                } disabled:opacity-50`}
+              >
+                {ringing ? (
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                  </svg>
+                )}
+                <span className="text-[8px] font-bold uppercase">{device.isRinging ? 'Stop' : 'Ring'}</span>
+              </button>
+
+              {/* Locate */}
+              <button
+                onClick={async () => {
+                  setCommandError(null);
+                  setLocating(true);
+                  try {
+                    await locateDevice(deviceId);
+                    setTimeout(() => onRefreshed?.(), 3000);
+                  } catch (err: any) {
+                    setCommandError(err.response?.data?.error || 'Locate failed');
+                  } finally {
+                    setLocating(false);
+                  }
+                }}
+                disabled={locating}
+                className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer disabled:opacity-50"
+              >
+                {locating ? (
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 0115 0z" />
+                  </svg>
+                )}
+                <span className="text-[8px] font-bold uppercase">Locate</span>
+              </button>
+
+              {/* Refresh */}
+              <button
+                onClick={async () => {
+                  setCommandError(null);
+                  setRefreshing(true);
+                  try {
+                    await refreshDevice(deviceId);
+                    setTimeout(() => onRefreshed?.(), 3000);
+                  } catch (err: any) {
+                    setCommandError(err.response?.data?.error || 'Refresh failed');
+                  } finally {
+                    setRefreshing(false);
+                  }
+                }}
+                disabled={refreshing}
+                className="flex flex-col items-center gap-1 p-2 rounded-xl bg-white/[0.03] border border-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/20 text-slate-400 hover:text-cyan-400 transition-all cursor-pointer disabled:opacity-50"
+              >
+                {refreshing ? (
+                  <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                  </svg>
+                )}
+                <span className="text-[8px] font-bold uppercase">Refresh</span>
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>
