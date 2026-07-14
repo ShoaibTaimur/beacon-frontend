@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { removeDevice, ringDevice, stopRingDevice, locateDevice, refreshDevice, getDevice } from '../../services/api';
 import Button from '../ui/Button';
@@ -22,6 +22,14 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
   const [locating, setLocating] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [commandError, setCommandError] = useState<string | null>(null);
+  const [timeTicker, setTimeTicker] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeTicker(t => t + 1);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
 
   const deviceId = device.id || device._id;
   const canExecuteCommands = !device.role || ['manager', 'finder'].includes(device.role);

@@ -71,7 +71,7 @@ export default function SharedDevicesPage() {
 
     const interval = setInterval(() => {
       loadSharedDevices(false);
-    }, 60000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, []);
@@ -182,6 +182,14 @@ function SharedDeviceCard({ device, onRemove, onRefreshed }: SharedDeviceCardPro
   const [locating, setLocating] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [commandError, setCommandError] = useState<string | null>(null);
+  const [timeTicker, setTimeTicker] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeTicker(t => t + 1);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, []);
 
   const deviceId = device.id || device._id;
   const canExecuteCommands = ['manager', 'finder'].includes(device.role);
