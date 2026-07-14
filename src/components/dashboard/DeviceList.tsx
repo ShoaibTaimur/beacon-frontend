@@ -31,7 +31,7 @@ export default function DeviceList() {
 
     const interval = setInterval(() => {
       fetchDevices(false);
-    }, 3000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
