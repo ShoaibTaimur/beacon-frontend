@@ -421,6 +421,24 @@ export default function LandingPage() {
               </div>
             </AnimatedSection>
           </div>
+
+          {/* VPN & Ad-blocker Advisory */}
+          <AnimatedSection delay={200} className="mt-12 max-w-3xl mx-auto">
+            <div className="p-6 rounded-2xl bg-amber-500/5 border border-amber-500/20 hover:border-amber-500/30 transition-all duration-300 flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 shrink-0">
+                <svg className="w-5.5 h-5.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div className="text-left">
+                <h4 className="text-sm font-bold text-amber-400 mb-1">Important: Disable VPNs & DNS Ad-Blockers</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Active VPNs, DNS-level ad-blockers (like Pi-hole or AdGuard), and device firewalls often block Firebase Installation calls, which will prevent the companion app from registering or receiving remote commands. 
+                  Please temporarily disable them during setup, or whitelist <strong><code>firebaseinstallations.googleapis.com</code></strong> and <strong><code>fcmregistrations.googleapis.com</code></strong>.
+                </p>
+              </div>
+            </div>
+          </AnimatedSection>
         </div>
       </section>
 

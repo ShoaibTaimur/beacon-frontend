@@ -83,5 +83,17 @@ The minified production assets will be output in the `dist` directory.
 
 ---
 
+## Troubleshooting: VPN & Ad-blocker Limitations
+
+Firebase Cloud Messaging (FCM) relies on the Firebase Installations Service (FIS) to register Android device hardware and pull notification tokens.
+
+Active VPNs, DNS-level ad-blockers (like Pi-hole, AdGuard), and device-level ad-blockers/firewalls will block connections to Firebase/Google API endpoints, causing device registration failures (`FIS_AUTH_ERROR`) or rendering remote commands unresponsive.
+
+### Solution:
+- Whitelist `firebaseinstallations.googleapis.com` and `fcmregistrations.googleapis.com` in your VPN, DNS filter, or ad-blocker.
+- Alternatively, temporarily disable VPNs/Ad-blockers during companion application installation and registration.
+
+---
+
 ## Developer
 Developed by **Shoaib Taimur** ([taimur.dev](https://taimur.dev)).
