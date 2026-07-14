@@ -210,6 +210,16 @@ function SharedDeviceCard({ device, onRemove, onRefreshed }: SharedDeviceCardPro
             <p className="text-[10px] text-slate-500">
               shared by {device.ownerEmail}
             </p>
+            {device.fcmError && (
+              <div className="mt-2 flex items-start gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[9px] text-amber-400 font-medium">
+                <svg className="w-3 h-3 flex-shrink-0 mt-0.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span className="leading-tight" title={device.fcmError}>
+                  Delayed commands: {device.fcmError}. Try disabling VPN/AdBlocker or whitelisting Firebase.
+                </span>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-2">
