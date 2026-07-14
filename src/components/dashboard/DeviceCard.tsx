@@ -423,39 +423,14 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
               onClick={async () => {
                 setCommandError(null);
                 setRinging(true);
-                const initialLastSeen = device.lastSeen;
                 try {
                   if (device.isRinging) {
                     await stopRingDevice(deviceId);
                   } else {
                     await ringDevice(deviceId);
                   }
-                  
-                  // Start high-frequency status polling
-                  const startTime = Date.now();
-                  const intervalId = setInterval(async () => {
-                    try {
-                      const res = await getDevice(deviceId);
-                      const updatedDevice = res.data.device;
-                      const initialTime = initialLastSeen ? new Date(initialLastSeen).getTime() : 0;
-                      const updatedTime = updatedDevice.lastSeen ? new Date(updatedDevice.lastSeen).getTime() : 0;
-                      
-                      if (updatedTime > initialTime) {
-                        clearInterval(intervalId);
-                        setRinging(false);
-                        onRefreshed?.();
-                        return;
-                      }
-                    } catch (err) {
-                      console.error('[DeviceCard] Polling error:', err);
-                    }
-                    
-                    if (Date.now() - startTime > 30000) {
-                      clearInterval(intervalId);
-                      setRinging(false);
-                      onRefreshed?.();
-                    }
-                  }, 2000);
+                  setRinging(false);
+                  onRefreshed?.();
                 } catch (err: any) {
                   setCommandError(err.response?.data?.error || 'Ring failed');
                   setRinging(false);
