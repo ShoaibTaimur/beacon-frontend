@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { removeDevice, ringDevice, stopRingDevice, locateDevice, refreshDevice } from '../../services/api';
+import { removeDevice, ringDevice, stopRingDevice, locateDevice, refreshDevice, getDevice } from '../../services/api';
 import Button from '../ui/Button';
 import TrustPanel from './TrustPanel';
 import HistoryPanel from './HistoryPanel';
@@ -194,6 +194,16 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
         <p className="text-xs text-slate-400 mt-0.5 truncate">
           {device.manufacturer || 'Unknown Manufacturer'} • {device.model || 'Android Device'}
         </p>
+        {device.fcmError && (
+          <div className="mt-2 flex items-start gap-1.5 px-2.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[10px] text-amber-400 font-medium">
+            <svg className="w-3.5 h-3.5 flex-shrink-0 mt-0.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span className="leading-tight" title={device.fcmError}>
+              Delayed commands: {device.fcmError}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Visual System Metrics */}
@@ -405,16 +415,41 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
               onClick={async () => {
                 setCommandError(null);
                 setRinging(true);
+                const initialLastSeen = device.lastSeen;
                 try {
                   if (device.isRinging) {
                     await stopRingDevice(deviceId);
                   } else {
                     await ringDevice(deviceId);
                   }
-                  onRefreshed?.();
+                  
+                  // Start high-frequency status polling
+                  const startTime = Date.now();
+                  const intervalId = setInterval(async () => {
+                    try {
+                      const res = await getDevice(deviceId);
+                      const updatedDevice = res.data.device;
+                      const initialTime = initialLastSeen ? new Date(initialLastSeen).getTime() : 0;
+                      const updatedTime = updatedDevice.lastSeen ? new Date(updatedDevice.lastSeen).getTime() : 0;
+                      
+                      if (updatedTime > initialTime) {
+                        clearInterval(intervalId);
+                        setRinging(false);
+                        onRefreshed?.();
+                        return;
+                      }
+                    } catch (err) {
+                      console.error('[DeviceCard] Polling error:', err);
+                    }
+                    
+                    if (Date.now() - startTime > 30000) {
+                      clearInterval(intervalId);
+                      setRinging(false);
+                      onRefreshed?.();
+                    }
+                  }, 2000);
                 } catch (err: any) {
                   setCommandError(err.response?.data?.error || 'Ring failed');
-                } finally {
                   setRinging(false);
                 }
               }}
@@ -440,12 +475,37 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
               onClick={async () => {
                 setCommandError(null);
                 setLocating(true);
+                const initialLastSeen = device.lastSeen;
                 try {
                   await locateDevice(deviceId);
-                  setTimeout(() => onRefreshed?.(), 3000);
+                  
+                  // Start high-frequency status polling
+                  const startTime = Date.now();
+                  const intervalId = setInterval(async () => {
+                    try {
+                      const res = await getDevice(deviceId);
+                      const updatedDevice = res.data.device;
+                      const initialTime = initialLastSeen ? new Date(initialLastSeen).getTime() : 0;
+                      const updatedTime = updatedDevice.lastSeen ? new Date(updatedDevice.lastSeen).getTime() : 0;
+                      
+                      if (updatedTime > initialTime) {
+                        clearInterval(intervalId);
+                        setLocating(false);
+                        onRefreshed?.();
+                        return;
+                      }
+                    } catch (err) {
+                      console.error('[DeviceCard] Polling error:', err);
+                    }
+                    
+                    if (Date.now() - startTime > 30000) {
+                      clearInterval(intervalId);
+                      setLocating(false);
+                      onRefreshed?.();
+                    }
+                  }, 2000);
                 } catch (err: any) {
                   setCommandError(err.response?.data?.error || 'Locate failed');
-                } finally {
                   setLocating(false);
                 }
               }}
@@ -468,12 +528,37 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
               onClick={async () => {
                 setCommandError(null);
                 setRefreshing(true);
+                const initialLastSeen = device.lastSeen;
                 try {
                   await refreshDevice(deviceId);
-                  setTimeout(() => onRefreshed?.(), 3000);
+                  
+                  // Start high-frequency status polling
+                  const startTime = Date.now();
+                  const intervalId = setInterval(async () => {
+                    try {
+                      const res = await getDevice(deviceId);
+                      const updatedDevice = res.data.device;
+                      const initialTime = initialLastSeen ? new Date(initialLastSeen).getTime() : 0;
+                      const updatedTime = updatedDevice.lastSeen ? new Date(updatedDevice.lastSeen).getTime() : 0;
+                      
+                      if (updatedTime > initialTime) {
+                        clearInterval(intervalId);
+                        setRefreshing(false);
+                        onRefreshed?.();
+                        return;
+                      }
+                    } catch (err) {
+                      console.error('[DeviceCard] Polling error:', err);
+                    }
+                    
+                    if (Date.now() - startTime > 30000) {
+                      clearInterval(intervalId);
+                      setRefreshing(false);
+                      onRefreshed?.();
+                    }
+                  }, 2000);
                 } catch (err: any) {
                   setCommandError(err.response?.data?.error || 'Refresh failed');
-                } finally {
                   setRefreshing(false);
                 }
               }}

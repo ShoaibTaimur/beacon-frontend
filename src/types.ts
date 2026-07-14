@@ -33,6 +33,7 @@ export interface Device {
   lastSeen?: string;
   isOnline: boolean;
   fcmToken?: string;
+  fcmError?: string | null;
   isRinging?: boolean;
   latitude?: number;
   longitude?: number;

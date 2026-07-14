@@ -317,16 +317,44 @@ function SharedDeviceCard({ device, onRemove, onRefreshed }: SharedDeviceCardPro
                 onClick={async () => {
                   setCommandError(null);
                   setRinging(true);
+                  const initialLastSeen = device.lastSeen;
                   try {
                     if (device.isRinging) {
                       await stopRingDevice(deviceId);
                     } else {
                       await ringDevice(deviceId);
                     }
-                    onRefreshed?.();
+                    
+                    // Start high-frequency status polling
+                    const startTime = Date.now();
+                    const intervalId = setInterval(async () => {
+                      try {
+                        const res = await getSharedDevices();
+                        const updatedDevices = res.data.devices || [];
+                        const updatedDevice = updatedDevices.find((d: any) => (d.id || d._id) === deviceId);
+                        if (updatedDevice) {
+                          const initialTime = initialLastSeen ? new Date(initialLastSeen).getTime() : 0;
+                          const updatedTime = updatedDevice.lastSeen ? new Date(updatedDevice.lastSeen).getTime() : 0;
+                          
+                          if (updatedTime > initialTime) {
+                            clearInterval(intervalId);
+                            setRinging(false);
+                            onRefreshed?.();
+                            return;
+                          }
+                        }
+                      } catch (err) {
+                        console.error('[SharedDeviceCard] Polling error:', err);
+                      }
+                      
+                      if (Date.now() - startTime > 30000) {
+                        clearInterval(intervalId);
+                        setRinging(false);
+                        onRefreshed?.();
+                      }
+                    }, 2000);
                   } catch (err: any) {
                     setCommandError(err.response?.data?.error || 'Ring failed');
-                  } finally {
                     setRinging(false);
                   }
                 }}
@@ -352,12 +380,40 @@ function SharedDeviceCard({ device, onRemove, onRefreshed }: SharedDeviceCardPro
                 onClick={async () => {
                   setCommandError(null);
                   setLocating(true);
+                  const initialLastSeen = device.lastSeen;
                   try {
                     await locateDevice(deviceId);
-                    setTimeout(() => onRefreshed?.(), 3000);
+                    
+                    // Start high-frequency status polling
+                    const startTime = Date.now();
+                    const intervalId = setInterval(async () => {
+                      try {
+                        const res = await getSharedDevices();
+                        const updatedDevices = res.data.devices || [];
+                        const updatedDevice = updatedDevices.find((d: any) => (d.id || d._id) === deviceId);
+                        if (updatedDevice) {
+                          const initialTime = initialLastSeen ? new Date(initialLastSeen).getTime() : 0;
+                          const updatedTime = updatedDevice.lastSeen ? new Date(updatedDevice.lastSeen).getTime() : 0;
+                          
+                          if (updatedTime > initialTime) {
+                            clearInterval(intervalId);
+                            setLocating(false);
+                            onRefreshed?.();
+                            return;
+                          }
+                        }
+                      } catch (err) {
+                        console.error('[SharedDeviceCard] Polling error:', err);
+                      }
+                      
+                      if (Date.now() - startTime > 30000) {
+                        clearInterval(intervalId);
+                        setLocating(false);
+                        onRefreshed?.();
+                      }
+                    }, 2000);
                   } catch (err: any) {
                     setCommandError(err.response?.data?.error || 'Locate failed');
-                  } finally {
                     setLocating(false);
                   }
                 }}
@@ -380,12 +436,40 @@ function SharedDeviceCard({ device, onRemove, onRefreshed }: SharedDeviceCardPro
                 onClick={async () => {
                   setCommandError(null);
                   setRefreshing(true);
+                  const initialLastSeen = device.lastSeen;
                   try {
                     await refreshDevice(deviceId);
-                    setTimeout(() => onRefreshed?.(), 3000);
+                    
+                    // Start high-frequency status polling
+                    const startTime = Date.now();
+                    const intervalId = setInterval(async () => {
+                      try {
+                        const res = await getSharedDevices();
+                        const updatedDevices = res.data.devices || [];
+                        const updatedDevice = updatedDevices.find((d: any) => (d.id || d._id) === deviceId);
+                        if (updatedDevice) {
+                          const initialTime = initialLastSeen ? new Date(initialLastSeen).getTime() : 0;
+                          const updatedTime = updatedDevice.lastSeen ? new Date(updatedDevice.lastSeen).getTime() : 0;
+                          
+                          if (updatedTime > initialTime) {
+                            clearInterval(intervalId);
+                            setRefreshing(false);
+                            onRefreshed?.();
+                            return;
+                          }
+                        }
+                      } catch (err) {
+                        console.error('[SharedDeviceCard] Polling error:', err);
+                      }
+                      
+                      if (Date.now() - startTime > 30000) {
+                        clearInterval(intervalId);
+                        setRefreshing(false);
+                        onRefreshed?.();
+                      }
+                    }, 2000);
                   } catch (err: any) {
                     setCommandError(err.response?.data?.error || 'Refresh failed');
-                  } finally {
                     setRefreshing(false);
                   }
                 }}
