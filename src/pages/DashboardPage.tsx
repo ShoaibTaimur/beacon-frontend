@@ -205,7 +205,7 @@ export default function DashboardPage() {
         const meRes = await getMe();
         if (meRes.data && meRes.data.success && meRes.data.user) {
           const profile = meRes.data.user;
-          if (profile.role === 'admin' || profile.isAdmin === true) {
+          if (profile.role?.toLowerCase() === 'admin' || profile.isAdmin === true || profile.isadmin === true) {
             setIsAdmin(true);
             try {
               const res = await getConfig('admin_config');
