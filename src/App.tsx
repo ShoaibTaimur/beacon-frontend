@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/layout/ProtectedRoute';
@@ -8,6 +8,11 @@ import DashboardPage from './pages/DashboardPage';
 import SharedDevicesPage from './pages/SharedDevicesPage';
 import MapTimelinePage from './pages/MapTimelinePage';
 import LandingPage from './pages/LandingPage';
+
+function VercelAnalytics() {
+  const location = useLocation();
+  return <Analytics key={location.pathname} />;
+}
 
 function App() {
   return (
@@ -36,8 +41,8 @@ function App() {
           <Route path="/devices/:id/map" element={<MapTimelinePage />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>
+        <VercelAnalytics />
       </AuthProvider>
-      <Analytics />
     </Router>
   );
 }

@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getConfig } from '../services/api';
+
+// Helper function to hash password in SHA-256
+async function sha256(message: string): Promise<string> {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 export default function LandingPage() {
   const { user } = useAuth();
@@ -8,6 +17,68 @@ export default function LandingPage() {
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
   const [activeTab, setActiveTab] = useState('');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [downloadPassword, setDownloadPassword] = useState('');
+  const [downloadError, setDownloadError] = useState('');
+  const [downloading, setDownloading] = useState(false);
+
+  const handleDownloadClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowDownloadModal(true);
+    setDownloadPassword('');
+    setDownloadError('');
+  };
+
+  const handleDownloadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setDownloadError('');
+    setDownloading(true);
+
+    try {
+      const res = await getConfig('apk_download');
+      if (res.data && res.data.success && res.data.value && res.data.value.passwordHash) {
+        const storedHash = res.data.value.passwordHash;
+        const enteredHash = await sha256(downloadPassword);
+        
+        if (enteredHash === storedHash) {
+          const link = document.createElement('a');
+          link.href = '/beacon.apk';
+          link.download = 'beacon.apk';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          setShowDownloadModal(false);
+        } else {
+          setDownloadError('Incorrect password. Access denied.');
+        }
+      } else {
+        const link = document.createElement('a');
+        link.href = '/beacon.apk';
+        link.download = 'beacon.apk';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setShowDownloadModal(false);
+      }
+    } catch (err: any) {
+      console.error('Download verification error:', err);
+      // Fallback: If config doesn't exist yet on DB, allow download
+      if (err.response?.status === 404) {
+        const link = document.createElement('a');
+        link.href = '/beacon.apk';
+        link.download = 'beacon.apk';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setShowDownloadModal(false);
+      } else {
+        setDownloadError('Unable to verify password. Please try again.');
+      }
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -199,14 +270,13 @@ export default function LandingPage() {
               {user ? "Open Dashboard" : "Register This Device"}
               <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
             </Link>
-            <a
-              href="/beacon.apk"
-              download
+            <button
+              onClick={handleDownloadClick}
               className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/5 px-7 py-3.5 text-sm font-semibold text-cyan-300 backdrop-blur transition-all duration-300 hover:border-cyan-400/60 hover:bg-cyan-500/10 cursor-pointer"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
               Download APK
-            </a>
+            </button>
           </div>
         </div>
 
@@ -899,16 +969,15 @@ export default function LandingPage() {
           </nav>
 
           <div className="mt-auto flex flex-col gap-4">
-            <a
-              href="/beacon.apk"
-              download
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold transition-all shadow-lg hover:brightness-110 cursor-pointer"
+            <button
+              onClick={handleDownloadClick}
+              className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold transition-all shadow-lg hover:brightness-110 cursor-pointer w-full text-center"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
               Download APK
-            </a>
+            </button>
             {user ? (
               <Link
                 to="/dashboard"
@@ -938,6 +1007,79 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+
+      {/* Download Password Modal */}
+      {showDownloadModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#030712]/80 backdrop-blur-md p-4">
+          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-cyan-500/10 bg-slate-950 p-8 shadow-2xl animate-beacon-slide-up">
+            <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-cyan-500/[0.04] blur-2xl pointer-events-none" />
+            
+            <div className="flex flex-col items-center text-center">
+              {/* Lock Icon */}
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+              </div>
+
+              <h3 className="text-xl font-bold text-white tracking-tight">
+                Secure APK Download
+              </h3>
+              <p className="mt-2 text-sm text-slate-400 max-w-xs">
+                This companion application is private. Please enter access password to download the file.
+              </p>
+
+              <p className="mt-3.5 text-xs text-slate-500">
+                Don't have the password?{' '}
+                <a 
+                  href="mailto:contact@taimur.dev?subject=Request%20Access%20to%20Beacon%20APK&body=Hello%20Taimur%2C%0D%0A%0D%0AI%20would%20like%20to%20request%20the%20access%20password%20to%20download%20the%20Beacon%20APK.%0D%0A%0D%0AThank%20you!"
+                  className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium underline underline-offset-4 cursor-pointer"
+                >
+                  Email contact@taimur.dev to get it
+                </a>
+              </p>
+
+              <form onSubmit={handleDownloadSubmit} className="mt-6 w-full space-y-4">
+                <div>
+                  <input
+                    type="password"
+                    value={downloadPassword}
+                    onChange={(e) => setDownloadPassword(e.target.value)}
+                    placeholder="Enter access password"
+                    required
+                    className="w-full bg-[#050912] border border-white/10 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors text-center"
+                    autoFocus
+                  />
+                </div>
+
+                {downloadError && (
+                  <p className="text-xs text-red-400 flex items-center justify-center gap-1.5 animate-pulse">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                    {downloadError}
+                  </p>
+                )}
+
+                <div className="flex gap-3 w-full">
+                  <button
+                    type="button"
+                    onClick={() => setShowDownloadModal(false)}
+                    className="flex-1 rounded-2xl border border-white/10 bg-white/5 py-3 text-sm font-semibold text-slate-300 hover:bg-white/10 transition-all cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={downloading}
+                    className="flex-1 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 py-3 text-sm font-semibold text-white transition-all disabled:opacity-50 cursor-pointer shadow-lg shadow-cyan-500/20"
+                  >
+                    {downloading ? 'Verifying...' : 'Download'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

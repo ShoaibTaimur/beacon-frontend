@@ -134,4 +134,11 @@ export const locateDevice = (id: string): Promise<AxiosResponse<{ success: boole
 export const refreshDevice = (id: string): Promise<AxiosResponse<{ success: boolean }>> => 
   api.post(`/devices/${id}/refresh`);
 
+// Config settings APIs (stored in MongoDB)
+export const getConfig = (key: string): Promise<AxiosResponse<{ success: boolean; value: any }>> =>
+  api.get(`/config/${key}`);
+
+export const updateConfig = (key: string, value: any): Promise<AxiosResponse<{ success: boolean; setting: any }>> =>
+  api.post(`/config/${key}`, { value });
+
 export default api;
