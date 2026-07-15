@@ -30,21 +30,24 @@ export default function RegisterPage() {
       <div className="relative w-full max-w-md animate-beacon-slide-up">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-2xl shadow-cyan-500/30">
-            <svg
-              className="w-9 h-9 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.788m13.788 0c3.808 3.808 3.808 9.98 0 13.788M12 12h.008v.008H12V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-              />
-            </svg>
-          </div>
+          <Link
+            to="/"
+            className="inline-flex w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 items-center justify-center shadow-2xl shadow-cyan-500/30 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer hover:shadow-cyan-400/40"
+          >
+             <svg
+               className="w-9 h-9 text-white"
+               fill="none"
+               viewBox="0 0 24 24"
+               stroke="currentColor"
+               strokeWidth={2}
+             >
+               <path
+                 strokeLinecap="round"
+                 strokeLinejoin="round"
+                 d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.788m13.788 0c3.808 3.808 3.808 9.98 0 13.788M12 12h.008v.008H12V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+               />
+             </svg>
+          </Link>
           <h1 className="text-3xl font-bold text-white tracking-tight">
             Create account
           </h1>

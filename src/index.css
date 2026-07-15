@@ -17,6 +17,14 @@
   --animate-gradient-shift: gradient-shift 8s ease infinite;
   --animate-ping-slow: ping-slow 2.5s cubic-bezier(0, 0, 0.2, 1) infinite;
   --animate-shimmer: shimmer 3s linear infinite;
+  --animate-wave-left-1: wave-ripple-left 2.4s infinite;
+  --animate-wave-left-2: wave-ripple-left 2.4s infinite 0.6s;
+  --animate-wave-left-3: wave-ripple-left 2.4s infinite 1.2s;
+  --animate-wave-left-4: wave-ripple-left 2.4s infinite 1.8s;
+  --animate-wave-right-1: wave-ripple-right 2.4s infinite;
+  --animate-wave-right-2: wave-ripple-right 2.4s infinite 0.6s;
+  --animate-wave-right-3: wave-ripple-right 2.4s infinite 1.2s;
+  --animate-wave-right-4: wave-ripple-right 2.4s infinite 1.8s;
 
   @keyframes beacon-fade-in {
     from { opacity: 0; transform: translateY(4px); }
@@ -49,6 +57,18 @@
   @keyframes ping-slow {
     0% { transform: scale(1); opacity: 1; }
     75%, 100% { transform: scale(2); opacity: 0; }
+  }
+  @keyframes wave-ripple-left {
+    0% { opacity: 0; transform: translateX(8px) scale(0.9); }
+    30% { opacity: 1; }
+    80% { opacity: 0.35; }
+    100% { opacity: 0; transform: translateX(-32px) scale(1.15); }
+  }
+  @keyframes wave-ripple-right {
+    0% { opacity: 0; transform: translateX(-8px) scale(0.9); }
+    30% { opacity: 1; }
+    80% { opacity: 0.35; }
+    100% { opacity: 0; transform: translateX(32px) scale(1.15); }
   }
 }
 

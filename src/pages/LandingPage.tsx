@@ -16,7 +16,7 @@ export default function LandingPage() {
   const [mounted, setMounted] = useState(false);
   const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
   const [activeTab, setActiveTab] = useState('');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
 
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [downloadPassword, setDownloadPassword] = useState('');
@@ -134,6 +134,39 @@ export default function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-[#050912] text-white antialiased selection:bg-cyan-500/30 selection:text-cyan-200">
+      {/* Top Brand Indicator */}
+      <header className="absolute top-0 left-0 right-0 z-40 flex justify-center pt-8 pointer-events-none">
+        <div className="pointer-events-auto flex items-center gap-4 select-none">
+          {/* Left signal waves */}
+          <div className="w-24 h-6">
+            <svg viewBox="0 0 80 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="w-full h-full text-cyan-400/80">
+              <path d="M70 7a10 10 0 0 0 0 10" className="animate-wave-left-1" />
+              <path d="M55 2a25 25 0 0 0 0 20" className="animate-wave-left-2" />
+              <path d="M40 0a40 40 0 0 0 0 24" className="animate-wave-left-3" />
+              <path d="M25 0a55 55 0 0 0 0 24" className="animate-wave-left-4" />
+            </svg>
+          </div>
+
+          {/* BEACON word */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="text-lg font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 font-sans shadow-cyan-500/20 drop-shadow-[0_0_10px_rgba(6,182,212,0.4)] cursor-pointer hover:scale-105 active:scale-95 transition-all duration-300"
+          >
+            BEACON
+          </button>
+
+          {/* Right signal waves */}
+          <div className="w-24 h-6">
+            <svg viewBox="0 0 80 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" className="w-full h-full text-cyan-400/80">
+              <path d="M10 7a10 10 0 0 1 0 10" className="animate-wave-right-1" />
+              <path d="M25 2a25 25 0 0 1 0 20" className="animate-wave-right-2" />
+              <path d="M40 0a40 40 0 0 1 0 24" className="animate-wave-right-3" />
+              <path d="M55 0a55 55 0 0 1 0 24" className="animate-wave-right-4" />
+            </svg>
+          </div>
+        </div>
+      </header>
+
       {/* Ambient background */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
         <div
@@ -154,70 +187,165 @@ export default function LandingPage() {
         />
       </div>
 
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-[#050912]/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <a href="#" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="group flex items-center gap-2">
-            <span className="text-xl font-extrabold tracking-[0.22em] text-cyan-400 transition-all duration-300 group-hover:text-cyan-300 group-hover:tracking-[0.28em]">
+      {/* Centered Floating Dock Navigation */}
+      <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-auto px-4">
+        {/* Glassmorphic Capsule */}
+        <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 rounded-full bg-[#050912]/80 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5),0_0_20px_rgba(6,182,212,0.15)] transition-all duration-300 hover:border-cyan-500/30">
+          
+          {/* Branding Capsule */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="group flex items-center gap-0 hover:gap-2 px-2.5 py-1.5 bg-cyan-500/5 rounded-full border border-cyan-500/10 hover:border-cyan-500/30 transition-all duration-500 ease-out hover:scale-105 active:scale-95 cursor-pointer overflow-hidden"
+          >
+            <div className="relative flex items-center justify-center w-5 h-5 shrink-0 text-cyan-400">
+              {/* Glowing background */}
+              <div className="absolute inset-0 rounded-full bg-cyan-500/20 blur-[2px] animate-pulse" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4.5 h-4.5 relative z-10">
+                <path d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.788m13.788 0c3.808 3.808 3.808 9.98 0 13.788M12 12h.008v.008H12V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+              </svg>
+            </div>
+            <span className="max-w-0 group-hover:max-w-[100px] opacity-0 group-hover:opacity-100 text-[10px] font-extrabold tracking-wider text-cyan-300 transition-all duration-500 ease-out overflow-hidden whitespace-nowrap">
               BEACON
             </span>
-          </a>
-          <div className="hidden items-center gap-1 md:flex">
+          </button>
+
+          <div className="h-5 w-[1px] bg-white/10" />
+
+          {/* Navigation Tabs */}
+          <div className="flex items-center gap-1 sm:gap-2">
             {[
-              { l: "Features", id: "features" },
-              { l: "How it works", id: "how-it-works" },
-              { l: "Setup Guide", id: "setup" },
-              { l: "Compare", id: "compare" },
-              { l: "Requirements", id: "requirements" },
-              { l: "Developer", id: "about" }
+              { 
+                l: "Features", 
+                id: "features",
+                icon: (
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48z" />
+                  </svg>
+                )
+              },
+              { 
+                l: "How it works", 
+                id: "how-it-works",
+                icon: (
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                )
+              },
+              { 
+                l: "Setup Guide", 
+                id: "setup",
+                icon: (
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17L17.25 21A2.67 2.67 0 1021 17.25l-5.83-5.83m-3.75 3.75a2.67 2.67 0 01-3.75-3.75l5.83-5.83A2.67 2.67 0 0017.25 3 2.67 2.67 0 0013.5 6.75l-5.83 5.83z" />
+                  </svg>
+                )
+              },
+              { 
+                l: "Compare", 
+                id: "compare",
+                icon: (
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+                  </svg>
+                )
+              },
+              { 
+                l: "Requirements", 
+                id: "requirements",
+                icon: (
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                )
+              },
+              { 
+                l: "Developer", 
+                id: "about",
+                icon: (
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                  </svg>
+                )
+              }
             ].map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => handleTabClick(e, item.id)}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-white/5 ${
-                  activeTab === item.id ? 'text-cyan-400 bg-white/[0.02]' : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                {item.l}
-              </a>
+              <div key={item.id} className="group relative">
+                <a
+                  href={`#${item.id}`}
+                  onClick={(e) => handleTabClick(e, item.id)}
+                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 ease-out hover:scale-125 hover:-translate-y-1 active:scale-95 cursor-pointer ${
+                    activeTab === item.id
+                      ? 'bg-cyan-500/20 border border-cyan-400/40 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.2)]'
+                      : 'bg-white/[0.03] border border-white/5 text-slate-400 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  {item.icon}
+                </a>
+                <span className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 opacity-0 pointer-events-none group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-200 bg-slate-950/95 border border-white/10 px-2 py-1 rounded text-[9px] font-bold text-white whitespace-nowrap shadow-xl z-50">
+                  {item.l}
+                </span>
+              </div>
             ))}
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="h-5 w-[1px] bg-white/10" />
+
+          {/* Action Links */}
+          <div className="flex items-center gap-1 sm:gap-2">
             {user ? (
-              <Link
-                to="/dashboard"
-                className="group relative inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-600 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition-all duration-300 hover:shadow-cyan-500/50 hover:-translate-y-0.5"
-              >
-                Dashboard
-                <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-              </Link>
+              <div className="group relative">
+                <Link
+                  to="/dashboard"
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-400 to-blue-600 text-slate-950 shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-all duration-300 ease-out hover:scale-125 hover:-translate-y-1 active:scale-95 cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                  </svg>
+                </Link>
+                <span className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 opacity-0 pointer-events-none group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-200 bg-slate-950/95 border border-white/10 px-2 py-1 rounded text-[9px] font-bold text-white whitespace-nowrap shadow-xl z-50">
+                  Dashboard
+                </span>
+              </div>
             ) : (
               <>
-                <Link to="/login" className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-slate-300 transition-colors hover:text-white sm:inline">Sign in</Link>
-                <Link
-                  to="/register"
-                  className="group relative inline-flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-cyan-400 to-blue-600 px-4 py-2 text-sm font-semibold text-slate-950 shadow-lg shadow-cyan-500/25 transition-all duration-300 hover:shadow-cyan-500/50 hover:-translate-y-0.5"
-                >
-                  Register
-                  <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-                </Link>
+                {/* Sign In */}
+                <div className="group relative">
+                  <Link
+                    to="/login"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-white/[0.03] border border-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition-all duration-300 ease-out hover:scale-125 hover:-translate-y-1 active:scale-95 cursor-pointer"
+                  >
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6A2.25 2.25 0 005.25 5.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                    </svg>
+                  </Link>
+                  <span className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 opacity-0 pointer-events-none group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-200 bg-slate-950/95 border border-white/10 px-2 py-1 rounded text-[9px] font-bold text-white whitespace-nowrap shadow-xl z-50">
+                    Sign In
+                  </span>
+                </div>
+
+                {/* Register */}
+                <div className="group relative">
+                  <Link
+                    to="/register"
+                    className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-400 to-blue-600 text-slate-950 shadow-[0_0_10px_rgba(6,182,212,0.3)] transition-all duration-300 ease-out hover:scale-125 hover:-translate-y-1 active:scale-95 cursor-pointer"
+                  >
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7.5L16.5 10m0 0L14 7.5m2.5 2.5V3m-2.25 8.75a4.5 4.5 0 11-4.5-4.5 4.5 4.5 0 014.5 4.5zm-4.5 5.25a8.99 8.99 0 00-6.75 3.3v1c0 .621.504 1.125 1.125 1.125h11.25a1.125 1.125 0 001.125-1.125v-1a8.99 8.99 0 00-6.75-3.3z" />
+                    </svg>
+                  </Link>
+                  <span className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 opacity-0 pointer-events-none group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-200 bg-slate-950/95 border border-white/10 px-2 py-1 rounded text-[9px] font-bold text-white whitespace-nowrap shadow-xl z-50">
+                    Register
+                  </span>
+                </div>
               </>
             )}
-            <button
-              onClick={() => setIsMenuOpen(true)}
-              className="md:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 cursor-pointer"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
           </div>
+
         </div>
       </nav>
 
       {/* Hero */}
-      <section className="relative mx-auto max-w-7xl px-6 pt-40 pb-24 sm:pt-48">
+      <section className="relative mx-auto max-w-7xl px-6 pt-28 pb-24 sm:pt-36">
         <div className={`mx-auto max-w-3xl text-center ${mounted ? "animate-beacon-slide-up" : "opacity-0"}`}>
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300 backdrop-blur">
             <span className="relative flex h-2 w-2">
@@ -296,17 +424,18 @@ export default function LandingPage() {
         </div>
 
         {/* Stat strip */}
-        <div className="mx-auto mt-16 grid max-w-3xl grid-cols-3 gap-6 border-t border-white/5 pt-8 text-center">
+        <div className="mx-auto mt-16 grid max-w-4xl grid-cols-2 md:grid-cols-4 gap-6 border-t border-white/5 pt-8 text-center">
           {[
             { v: "120M+", l: "pings / day" },
             { v: "99.98%", l: "uptime" },
             { v: "<300ms", l: "location latency" },
+            { v: "±3.0m", l: "location accuracy" },
           ].map((s) => (
             <div key={s.l} className="group cursor-default">
               <div className="bg-gradient-to-br from-white to-slate-400 bg-clip-text text-2xl font-bold text-transparent transition-transform duration-300 group-hover:scale-110 sm:text-3xl">
                 {s.v}
               </div>
-              <div className="mt-1 text-xs uppercase tracking-wider text-slate-500">{s.l}</div>
+              <div className="mt-1 text-[10px] sm:text-xs uppercase tracking-wider text-slate-500">{s.l}</div>
             </div>
           ))}
         </div>
@@ -907,87 +1036,7 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* Mobile menu drawer */}
-      <div className={`fixed inset-0 z-50 md:hidden transition-all duration-500 ${isMenuOpen ? 'visible pointer-events-auto' : 'invisible pointer-events-none'}`}>
-        {/* Backdrop overlay */}
-        <div
-          onClick={() => setIsMenuOpen(false)}
-          className={`absolute inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-500 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}
-        />
-        
-        {/* Slide-out panel */}
-        <div className={`absolute top-0 right-0 w-72 h-full bg-slate-950/90 backdrop-blur-xl border-l border-white/5 p-6 flex flex-col gap-8 transition-transform duration-500 ease-out transform ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-          <div className="flex items-center justify-between">
-            <span className="text-lg font-bold bg-gradient-to-r from-white to-slate-200 bg-clip-text text-transparent tracking-wide">Menu</span>
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all duration-300 cursor-pointer"
-            >
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
 
-          <nav className="flex flex-col gap-6 text-base font-semibold">
-            {[
-              { l: "Features", id: "features" },
-              { l: "How it works", id: "how-it-works" },
-              { l: "Setup Guide", id: "setup" },
-              { l: "Compare", id: "compare" },
-              { l: "Requirements", id: "requirements" },
-              { l: "Developer", id: "about" }
-            ].map((item) => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                onClick={(e) => { handleTabClick(e, item.id); setIsMenuOpen(false); }}
-                className={`hover:text-cyan-400 transition-colors duration-300 ${activeTab === item.id ? 'text-cyan-400' : 'text-slate-400'}`}
-              >
-                {item.l}
-              </a>
-            ))}
-          </nav>
-
-          <div className="mt-auto flex flex-col gap-4">
-            <button
-              onClick={handleDownloadClick}
-              className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-sm font-bold transition-all shadow-lg hover:brightness-110 cursor-pointer w-full text-center"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Download APK
-            </button>
-            {user ? (
-              <Link
-                to="/dashboard"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center justify-center py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-bold transition-all hover:bg-white/10"
-              >
-                Go to Dashboard
-              </Link>
-            ) : (
-              <div className="flex flex-col gap-3">
-                <Link
-                  to="/login"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-center py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-white text-sm font-bold transition-all hover:bg-white/10"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center justify-center py-3 px-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-bold transition-all hover:bg-cyan-500/20"
-                >
-                  Sign Up
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
 
       {/* Download Password Modal */}
       {showDownloadModal && (
