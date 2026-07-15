@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getConfig } from '../services/api';
+import { getConfig, downloadApk } from '../services/api';
 
 // Helper function to hash password in SHA-256
 async function sha256(message: string): Promise<string> {
@@ -36,44 +36,25 @@ export default function LandingPage() {
     setDownloading(true);
 
     try {
-      const res = await getConfig('apk_download');
-      if (res.data && res.data.success && res.data.value && res.data.value.passwordHash) {
-        const storedHash = res.data.value.passwordHash;
-        const enteredHash = await sha256(downloadPassword);
-        
-        if (enteredHash === storedHash) {
-          const link = document.createElement('a');
-          link.href = '/beacon.apk';
-          link.download = 'beacon.apk';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          setShowDownloadModal(false);
-        } else {
-          setDownloadError('Incorrect password. Access denied.');
-        }
-      } else {
-        const link = document.createElement('a');
-        link.href = '/beacon.apk';
-        link.download = 'beacon.apk';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setShowDownloadModal(false);
-      }
+      const res = await downloadApk(downloadPassword);
+      
+      const blob = new Blob([res.data], { type: 'application/vnd.android.package-archive' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'beacon.apk';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
+      setShowDownloadModal(false);
     } catch (err: any) {
       console.error('Download verification error:', err);
-      // Fallback: If config doesn't exist yet on DB, allow download
-      if (err.response?.status === 404) {
-        const link = document.createElement('a');
-        link.href = '/beacon.apk';
-        link.download = 'beacon.apk';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setShowDownloadModal(false);
+      if (err.response && err.response.status === 403) {
+        setDownloadError('Incorrect password. Access denied.');
       } else {
-        setDownloadError('Unable to verify password. Please try again.');
+        setDownloadError('Unable to download APK. Check password and try again.');
       }
     } finally {
       setDownloading(false);

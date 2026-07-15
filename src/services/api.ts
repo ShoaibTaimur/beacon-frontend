@@ -144,4 +144,7 @@ export const getAdminConfig = (key: string): Promise<AxiosResponse<{ success: bo
 export const updateConfig = (key: string, value: any): Promise<AxiosResponse<{ success: boolean; setting: any }>> =>
   api.post(`/config/${key}`, { value });
 
+export const downloadApk = (password: string): Promise<AxiosResponse<Blob>> =>
+  api.post('/config/download-apk', { password }, { responseType: 'blob' });
+
 export default api;
