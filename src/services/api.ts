@@ -138,6 +138,9 @@ export const refreshDevice = (id: string): Promise<AxiosResponse<{ success: bool
 export const getConfig = (key: string): Promise<AxiosResponse<{ success: boolean; value: any }>> =>
   api.get(`/config/${key}`);
 
+export const getAdminConfig = (key: string): Promise<AxiosResponse<{ success: boolean; value: any }>> =>
+  api.get(`/config/${key}/admin`);
+
 export const updateConfig = (key: string, value: any): Promise<AxiosResponse<{ success: boolean; setting: any }>> =>
   api.post(`/config/${key}`, { value });
 

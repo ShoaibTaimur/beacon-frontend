@@ -3,7 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import DeviceList from '../components/dashboard/DeviceList';
 import IncomingInvites from '../components/dashboard/IncomingInvites';
 import { useAuth } from '../contexts/AuthContext';
-import { getConfig, updateConfig } from '../services/api';
+import { getConfig, getAdminConfig, updateConfig } from '../services/api';
 
 // Helper function to hash password in SHA-256
 async function sha256(message: string): Promise<string> {
@@ -15,14 +15,27 @@ async function sha256(message: string): Promise<string> {
 
 export function AdminApkSettings({ currentAdminEmail }: { currentAdminEmail: string }) {
   const [password, setPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
 
   useEffect(() => {
     setNewAdminEmail(currentAdminEmail);
+    const fetchCurrentPassword = async () => {
+      try {
+        const res = await getAdminConfig('apk_download');
+        if (res.data && res.data.success && res.data.value && res.data.value.password) {
+          setCurrentPassword(res.data.value.password);
+        }
+      } catch (err) {
+        console.error('Failed to load current password:', err);
+      }
+    };
+    fetchCurrentPassword();
   }, [currentAdminEmail]);
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
@@ -37,8 +50,12 @@ export function AdminApkSettings({ currentAdminEmail }: { currentAdminEmail: str
 
     try {
       const hash = await sha256(password);
-      await updateConfig('apk_download', { passwordHash: hash });
-      setSuccessMsg('Download password updated and encrypted successfully!');
+      await updateConfig('apk_download', { 
+        password: password.trim(),
+        passwordHash: hash 
+      });
+      setCurrentPassword(password.trim());
+      setSuccessMsg('Download password updated and saved successfully!');
       setPassword('');
     } catch (err: any) {
       setErrorMsg(err.response?.data?.error || err.message || 'Failed to save password');
@@ -104,9 +121,24 @@ export function AdminApkSettings({ currentAdminEmail }: { currentAdminEmail: str
                 {showPassword ? "HIDE" : "SHOW"}
               </button>
             </div>
-            <p className="mt-1 text-[10px] text-slate-500">
+            <p className="mt-1 text-[10px] text-slate-500 mb-2">
               Only users entering this password on the landing page will be allowed to download the APK.
             </p>
+            {currentPassword && (
+              <div className="mt-2 text-xs text-cyan-400/80 flex items-center gap-2">
+                <span>Current Password:</span>
+                <span className="font-mono bg-[#050912] border border-white/5 px-2 py-0.5 rounded text-white tracking-wider">
+                  {showCurrentPassword ? currentPassword : '••••••••'}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="text-slate-400 hover:text-white cursor-pointer text-[10px] underline underline-offset-2"
+                >
+                  {showCurrentPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+            )}
           </div>
           <button
             type="submit"
