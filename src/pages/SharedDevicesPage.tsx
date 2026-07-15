@@ -105,10 +105,10 @@ export default function SharedDevicesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-[#050912] text-white antialiased">
       <Navbar />
 
-      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-slide-up">
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-beacon-slide-up">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-white tracking-tight">
             Shared With Me
@@ -162,10 +162,10 @@ export default function SharedDevicesPage() {
         )}
       </main>
 
-      {/* Background */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-500/3 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-cyan-600/3 rounded-full blur-3xl" />
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 right-0 h-[500px] w-[500px] animate-float-slow rounded-full bg-blue-600/[0.04] blur-3xl" />
+        <div className="absolute top-1/3 left-0 h-[400px] w-[400px] animate-float-slow rounded-full bg-cyan-500/[0.04] blur-3xl" style={{ animationDelay: "-3s" }} />
       </div>
     </div>
   );
@@ -182,7 +182,7 @@ function SharedDeviceCard({ device, onRemove, onRefreshed }: SharedDeviceCardPro
   const [locating, setLocating] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [commandError, setCommandError] = useState<string | null>(null);
-  const [timeTicker, setTimeTicker] = useState(0);
+  const [_timeTicker, setTimeTicker] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -196,7 +196,7 @@ function SharedDeviceCard({ device, onRemove, onRefreshed }: SharedDeviceCardPro
   const hasLocation = device.latitude != null && device.longitude != null;
 
   return (
-    <div className="group relative bg-white/[0.03] border border-white/5 rounded-2xl p-5 hover:border-white/10 transition-all duration-300">
+    <div className="group relative bg-white/[0.02] border border-white/5 rounded-2xl p-5 hover:border-cyan-500/30 hover:bg-white/[0.04] hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500 animate-beacon-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">

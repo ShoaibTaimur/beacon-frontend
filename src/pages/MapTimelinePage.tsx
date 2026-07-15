@@ -64,7 +64,7 @@ export default function MapTimelinePage() {
         try {
           const deviceRes = await getDevice(id!);
           deviceData = deviceRes.data.device;
-        } catch (e) {
+        } catch {
           try {
             const sharedRes = await getSharedDevice(id!);
             deviceData = sharedRes.data.device;
@@ -164,10 +164,10 @@ export default function MapTimelinePage() {
   const activePoint = selectedIndex !== null ? history[selectedIndex] : null;
 
   return (
-    <div className={`min-h-screen bg-neutral-950 text-white flex flex-col font-sans ${isApp ? 'h-screen overflow-hidden' : ''}`}>
+    <div className={`min-h-screen bg-[#050912] text-white flex flex-col font-sans ${isApp ? 'h-screen overflow-hidden' : ''}`}>
       {/* Conditionally render header based on isApp flag */}
       {!isApp && (
-        <header className="border-b border-neutral-900 bg-neutral-950/80 backdrop-blur-md sticky top-0 z-50">
+        <header className="border-b border-white/5 bg-[#050912]/70 backdrop-blur-xl sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-6 py-3 sm:py-0 min-h-[4rem] flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-6">
             <div className="flex items-center gap-3">
               <button
@@ -210,8 +210,7 @@ export default function MapTimelinePage() {
         </header>
       )}
 
-      {/* Main Screen Layout */}
-      <main className={`flex-1 flex min-h-0 animate-slide-up ${isApp ? 'flex-col p-2 h-full' : 'flex-col md:flex-row p-6 max-w-7xl mx-auto w-full gap-6'}`}>
+      <main className={`flex-1 flex min-h-0 animate-beacon-slide-up ${isApp ? 'flex-col p-2 h-full' : 'flex-col md:flex-row p-6 max-w-7xl mx-auto w-full gap-6'}`}>
         {/* Left Side: Map with Bottom Timeline Slider */}
         <div className={`flex-1 flex flex-col min-h-0 relative ${isApp ? 'h-[55%]' : 'min-h-[400px] md:min-h-0'}`}>
           {/* Header overlay for App WebView mode */}
@@ -233,16 +232,16 @@ export default function MapTimelinePage() {
           )}
 
           {/* Map Viewer */}
-          <div className={`flex-1 min-h-0 relative bg-neutral-900 rounded-2xl border border-neutral-900 overflow-hidden shadow-2xl flex flex-col w-full ${isApp ? 'h-full' : 'h-[400px] md:h-full'}`}>
+          <div className={`flex-1 min-h-0 relative bg-slate-900/60 rounded-2xl border border-white/5 overflow-hidden shadow-2xl flex flex-col w-full ${isApp ? 'h-full' : 'h-[400px] md:h-full'}`}>
             {loading ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-neutral-950/80 z-20">
+              <div className="absolute inset-0 flex items-center justify-center bg-[#050912]/80 z-20">
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-10 h-10 border-4 border-cyan-500/20 border-t-cyan-400 rounded-full animate-spin" />
                   <p className="text-sm text-neutral-400">Loading timeline...</p>
                 </div>
               </div>
             ) : error ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-neutral-950/80 z-20 p-6 text-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-[#050912]/80 z-20 p-6 text-center">
                 <div className="max-w-md">
                   <svg className="w-12 h-12 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -252,7 +251,7 @@ export default function MapTimelinePage() {
                 </div>
               </div>
             ) : history.length === 0 ? (
-              <div className="absolute inset-0 flex items-center justify-center bg-neutral-950/80 z-20 p-6 text-center">
+              <div className="absolute inset-0 flex items-center justify-center bg-[#050912]/80 z-20 p-6 text-center">
                 <div className="max-w-sm">
                   <svg className="w-16 h-16 text-neutral-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9 20l-5.447-2.724A2 2 0 013 15.487V7.512a2 2 0 011.196-1.812L9 3m0 17l6.764-3.382a2 2 0 001.236-1.813V7.512a2 2 0 00-1.236-1.813L9 3m0 17V3" />
@@ -275,7 +274,7 @@ export default function MapTimelinePage() {
 
           {/* Timeline Scrubbing Control Bar */}
           {history.length > 0 && !loading && (
-            <div className="mt-4 bg-neutral-900/60 border border-neutral-900 rounded-2xl p-4 shadow-xl backdrop-blur-md z-30">
+            <div className="mt-4 bg-white/[0.02] border border-white/5 rounded-2xl p-4 shadow-xl backdrop-blur-md z-30">
               <div className="flex items-center justify-between mb-3 text-xs text-neutral-400">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
@@ -325,8 +324,8 @@ export default function MapTimelinePage() {
 
         {/* Right Side: Stay Points / Stops Timeline List */}
         <div className={`w-full flex flex-col ${isApp ? 'h-[45%] mt-2 min-h-0' : 'md:w-80 mt-4 md:mt-0'}`}>
-          <div className={`bg-neutral-900/40 border border-neutral-900 rounded-2xl p-4 flex-1 flex flex-col overflow-hidden shadow-2xl backdrop-blur-md ${isApp ? 'min-h-0' : 'min-h-[300px] max-h-[500px] md:max-h-none'}`}>
-            <div className="flex items-center justify-between mb-4 border-b border-neutral-800 pb-3">
+          <div className={`bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex-1 flex flex-col overflow-hidden shadow-2xl backdrop-blur-md ${isApp ? 'min-h-0' : 'min-h-[300px] max-h-[500px] md:max-h-none'}`}>
+            <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-3">
               <h2 className="font-bold text-sm tracking-tight text-neutral-100 flex items-center gap-2">
                 <svg className="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -379,6 +378,12 @@ export default function MapTimelinePage() {
           </div>
         </div>
       </main>
+
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 right-0 h-[500px] w-[500px] animate-float-slow rounded-full bg-blue-600/[0.04] blur-3xl" />
+        <div className="absolute top-1/3 left-0 h-[400px] w-[400px] animate-float-slow rounded-full bg-cyan-500/[0.04] blur-3xl" style={{ animationDelay: "-3s" }} />
+      </div>
     </div>
   );
 }

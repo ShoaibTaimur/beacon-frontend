@@ -32,32 +32,17 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-white/5">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#050912]/70 backdrop-blur-xl border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo & Navigation Links */}
           <div className="flex items-center gap-8">
             <div
-              className="flex items-center gap-3 cursor-pointer"
-              onClick={() => navigate('/dashboard')}
+              className="group flex items-center gap-3 cursor-pointer"
+              onClick={() => navigate('/')}
             >
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/30">
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9.348 14.652a3.75 3.75 0 010-5.304m5.304 0a3.75 3.75 0 010 5.304m-7.425 2.121a6.75 6.75 0 010-9.546m9.546 0a6.75 6.75 0 010 9.546M5.106 18.894c-3.808-3.808-3.808-9.98 0-13.788m13.788 0c3.808 3.808 3.808 9.98 0 13.788M12 12h.008v.008H12V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                  />
-                </svg>
-              </div>
-              <span className="text-lg font-bold text-white tracking-tight">
-                Beacon
+              <span className="text-xl font-extrabold tracking-[0.22em] text-cyan-400 transition-all duration-300 group-hover:text-cyan-300 group-hover:tracking-[0.28em]">
+                BEACON
               </span>
             </div>
 

@@ -4,11 +4,11 @@ import IncomingInvites from '../components/dashboard/IncomingInvites';
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-[#050912] text-white antialiased">
       <Navbar />
 
       {/* Main content */}
-      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-slide-up">
+      <main className="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto animate-beacon-slide-up">
         {/* Pending Invites Alert Area */}
         <IncomingInvites />
 
@@ -26,10 +26,10 @@ export default function DashboardPage() {
         <DeviceList />
       </main>
 
-      {/* Subtle background gradient */}
-      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cyan-500/3 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/3 rounded-full blur-3xl" />
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 right-0 h-[500px] w-[500px] animate-float-slow rounded-full bg-blue-600/[0.04] blur-3xl" />
+        <div className="absolute top-1/3 left-0 h-[400px] w-[400px] animate-float-slow rounded-full bg-cyan-500/[0.04] blur-3xl" style={{ animationDelay: "-3s" }} />
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ export default function RegisterPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[#050912] flex items-center justify-center">
         <Loader size="lg" />
       </div>
     );
@@ -20,14 +20,14 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -left-40 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+    <div className="min-h-screen bg-[#050912] text-white flex items-center justify-center p-4 relative overflow-hidden antialiased">
+      {/* Ambient background */}
+      <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 right-0 h-[400px] w-[400px] animate-float-slow rounded-full bg-blue-600/[0.04] blur-3xl" />
+        <div className="absolute bottom-0 left-0 h-[400px] w-[400px] animate-float-slow rounded-full bg-cyan-500/[0.04] blur-3xl" style={{ animationDelay: "-3s" }} />
       </div>
 
-      <div className="relative w-full max-w-md animate-slide-up">
+      <div className="relative w-full max-w-md animate-beacon-slide-up">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-2xl shadow-cyan-500/30">
@@ -54,7 +54,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Form card */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-white/[0.02] backdrop-blur-xl border border-white/5 rounded-2xl p-8 shadow-2xl">
           <RegisterForm />
 
           <div className="relative my-6">
@@ -62,7 +62,7 @@ export default function RegisterPage() {
               <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-3 bg-slate-950 text-slate-500">or</span>
+              <span className="px-3 bg-[#050912] text-slate-500">or</span>
             </div>
           </div>
 

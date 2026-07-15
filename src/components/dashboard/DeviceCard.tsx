@@ -22,7 +22,7 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
   const [locating, setLocating] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [commandError, setCommandError] = useState<string | null>(null);
-  const [timeTicker, setTimeTicker] = useState(0);
+  const [_timeTicker, setTimeTicker] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -133,7 +133,7 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
   };
 
   return (
-    <div className="group relative bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 transition-all duration-500 hover:bg-white/10 hover:border-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/10 animate-slide-up">
+    <div className="group relative bg-white/[0.02] backdrop-blur-xl border border-white/5 rounded-2xl p-6 transition-all duration-500 hover:bg-white/[0.04] hover:border-cyan-500/30 hover:shadow-2xl hover:shadow-cyan-500/10 animate-beacon-fade-in">
       {/* Background radial highlight */}
       <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -289,7 +289,7 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
         </div>
 
         {/* GPS Radar Sweep Section */}
-        <div className="relative h-28 bg-slate-950/60 rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
+        <div className="relative h-28 bg-[#050912]/60 rounded-xl border border-white/5 overflow-hidden flex items-center justify-center">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:14px_14px] bg-center" />
           
           {device.latitude != null && (
@@ -298,35 +298,40 @@ export default function DeviceCard({ device, onRemoved, onRefreshed }: DeviceCar
               <span>SYNCED {formatLocationTime(device.locationTimestamp).toUpperCase()}</span>
             </div>
           )}
-          
-          <div className="absolute w-20 h-20 rounded-full border border-cyan-500/10" />
-          <div className="absolute w-12 h-12 rounded-full border border-cyan-500/15" />
-          <div className="absolute w-4 h-4 rounded-full border border-cyan-500/20" />
-          
-          <div className="absolute w-full h-[1px] bg-white/[0.02]" />
-          <div className="absolute h-full w-[1px] bg-white/[0.02]" />
-          
-          <div 
-            className="absolute w-[200%] h-[200%] origin-center animate-radar-sweep pointer-events-none"
-            style={{
-              background: 'conic-gradient(from 0deg, rgba(34,211,238,0.15) 0deg, transparent 90deg, transparent 360deg)'
-            }}
-          />
-          
+
           {device.latitude != null && (
             <Link
               to={`/devices/${deviceId}/map`}
-              className="absolute flex items-center justify-center group/map z-10 cursor-pointer"
-              style={{ transform: 'translate(10px, -15px)' }}
+              className="absolute top-2 right-3 z-20 rounded border border-cyan-400/40 bg-cyan-500/5 px-1.5 py-0.5 text-[8px] font-bold text-cyan-400 cursor-pointer hover:bg-cyan-500/10 transition-colors"
             >
-              <span className="absolute w-4 h-4 rounded-full bg-cyan-400/40 animate-ping" />
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-white shadow-lg shadow-cyan-400/50" />
-              
-              <span className="absolute bottom-6 bg-slate-900 border border-white/10 text-[10px] text-cyan-300 px-1.5 py-0.5 rounded opacity-0 group-hover/map:opacity-100 transition-opacity duration-200 whitespace-nowrap shadow-xl">
-                View Timeline Map
-              </span>
+              TIMELINE
             </Link>
           )}
+          
+          <div className="relative flex h-16 w-16 items-center justify-center">
+            <span className="absolute h-full w-full rounded-full border border-cyan-400/15" />
+            <span className="absolute h-10 w-10 rounded-full border border-cyan-400/20" />
+            
+            <div className="absolute h-full w-full animate-radar-sweep">
+              <div className="absolute top-1/2 left-1/2 h-1/2 w-1/2 origin-top-left bg-gradient-to-br from-cyan-400/50 via-cyan-400/10 to-transparent" style={{ clipPath: "polygon(0 0, 100% 0, 0 100%)" }} />
+            </div>
+            
+            {device.latitude != null ? (
+              <Link
+                to={`/devices/${deviceId}/map`}
+                className="absolute flex items-center justify-center group/map z-10 cursor-pointer"
+              >
+                <span className="absolute w-4 h-4 rounded-full bg-cyan-400/40 animate-ping" />
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-white shadow-lg shadow-cyan-400/50" />
+                
+                <span className="absolute bottom-6 bg-slate-900 border border-white/10 text-[10px] text-cyan-300 px-1.5 py-0.5 rounded opacity-0 group-hover/map:opacity-100 transition-opacity duration-200 whitespace-nowrap shadow-xl">
+                  View Timeline Map
+                </span>
+              </Link>
+            ) : (
+              <span className="relative h-2.5 w-2.5 rounded-full bg-slate-600 shadow-lg shadow-slate-700/50" />
+            )}
+          </div>
           
           <div className="absolute bottom-2 left-3 flex items-center gap-1.5 text-[9px] text-slate-500 font-mono tracking-wider">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-500/70 animate-pulse" />
