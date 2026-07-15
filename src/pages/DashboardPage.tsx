@@ -3,7 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import DeviceList from '../components/dashboard/DeviceList';
 import IncomingInvites from '../components/dashboard/IncomingInvites';
 import { useAuth } from '../contexts/AuthContext';
-import { getConfig, getAdminConfig, updateConfig } from '../services/api';
+import { getConfig, getAdminConfig, updateConfig, getMe } from '../services/api';
 
 // Helper function to hash password in SHA-256
 async function sha256(message: string): Promise<string> {
@@ -200,7 +200,28 @@ export default function DashboardPage() {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const fetchAdminEmail = async () => {
+    const fetchAdminStatus = async () => {
+      try {
+        const meRes = await getMe();
+        if (meRes.data && meRes.data.success && meRes.data.user) {
+          const profile = meRes.data.user;
+          if (profile.role === 'admin' || profile.isAdmin === true) {
+            setIsAdmin(true);
+            try {
+              const res = await getConfig('admin_config');
+              if (res.data && res.data.success && res.data.value && res.data.value.adminEmail) {
+                setAdminEmail(res.data.value.adminEmail);
+              }
+            } catch (err) {
+              // Ignore config load error
+            }
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching user profile:', err);
+      }
+
       try {
         const res = await getConfig('admin_config');
         if (res.data && res.data.success && res.data.value && res.data.value.adminEmail) {
@@ -223,7 +244,7 @@ export default function DashboardPage() {
     };
 
     if (user) {
-      fetchAdminEmail();
+      fetchAdminStatus();
     } else {
       setIsAdmin(false);
     }
