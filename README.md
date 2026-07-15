@@ -33,6 +33,25 @@ The goal of Project Beacon is to provide users with a secure, real-time dashboar
 
 ---
 
+## Screenshots
+
+### Home Dashboard
+![Home Dashboard](Screenshots/Home.jpeg)
+
+### Device History
+![Device History](Screenshots/Device%20History.jpeg)
+
+### Location History Timeline (Dark Mode)
+![Location History Timeline - Dark Mode](Screenshots/Timeline%28Dark%20mode%29.jpeg)
+
+### Location History Timeline (Light Mode)
+![Location History Timeline - Light Mode](Screenshots/Timeline%28white%20mode%29.jpeg)
+
+### Sharing Controls
+![Sharing Controls](Screenshots/Share.jpeg)
+
+---
+
 ## Tech Stack
 - **Framework**: React 19
 - **Build Tool**: Vite
