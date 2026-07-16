@@ -29,11 +29,33 @@ export default function DeviceList() {
   useEffect(() => {
     fetchDevices(true);
 
-    const interval = setInterval(() => {
-      fetchDevices(false);
-    }, 15000);
+    let interval: NodeJS.Timeout;
 
-    return () => clearInterval(interval);
+    const startPolling = () => {
+      clearInterval(interval);
+      interval = setInterval(() => {
+        if (!document.hidden) {
+          fetchDevices(false);
+        }
+      }, 15000);
+    };
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchDevices(false);
+        startPolling();
+      } else {
+        clearInterval(interval);
+      }
+    };
+
+    startPolling();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   const handleDeviceRemoved = (removedId: string) => {

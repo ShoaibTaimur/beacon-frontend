@@ -11,7 +11,9 @@ export default function Navbar() {
 
   useEffect(() => {
     if (user) {
+      let interval: NodeJS.Timeout;
       const loadInviteCount = async () => {
+        if (document.hidden) return;
         try {
           const res = await getIncomingInvites();
           setInviteCount(res.data?.length || 0);
@@ -20,8 +22,28 @@ export default function Navbar() {
         }
       };
       loadInviteCount();
-      const interval = setInterval(loadInviteCount, 30000);
-      return () => clearInterval(interval);
+
+      const startPolling = () => {
+        clearInterval(interval);
+        interval = setInterval(loadInviteCount, 30000);
+      };
+
+      const handleVisibilityChange = () => {
+        if (!document.hidden) {
+          loadInviteCount();
+          startPolling();
+        } else {
+          clearInterval(interval);
+        }
+      };
+
+      startPolling();
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        clearInterval(interval);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
     }
   }, [user]);
 

@@ -78,11 +78,33 @@ export default function SharedDevicesPage() {
   useEffect(() => {
     loadSharedDevices(true);
 
-    const interval = setInterval(() => {
-      loadSharedDevices(false);
-    }, 15000);
+    let interval: NodeJS.Timeout;
 
-    return () => clearInterval(interval);
+    const startPolling = () => {
+      clearInterval(interval);
+      interval = setInterval(() => {
+        if (!document.hidden) {
+          loadSharedDevices(false);
+        }
+      }, 15000);
+    };
+
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        loadSharedDevices(false);
+        startPolling();
+      } else {
+        clearInterval(interval);
+      }
+    };
+
+    startPolling();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []);
 
   const loadSharedDevices = async (showLoader = false) => {
