@@ -805,14 +805,14 @@ export default function LandingPage() {
         {(() => {
           const rows = [
             { f: "Live device tracking", b: true, g: true, l: true, fm: true },
-            { f: "Location history / timeline", b: true, g: true, l: true, fm: true },
+            { f: "Location history (60-day retention)", b: true, g: true, l: true, fm: true },
             { f: "Live battery %", b: true, g: "partial", l: true, fm: "partial" },
             { f: "Live RAM & storage", b: true, g: false, l: false, fm: false },
             { f: "Timeline scrubber & replay", b: true, g: false, l: "partial", fm: false },
             { f: "Stay-point detection", b: true, g: false, l: true, fm: false },
             { f: "Granular data-scope sharing", b: true, g: false, l: false, fm: false },
             { f: "Roles (viewer / finder / manager)", b: true, g: false, l: "partial", fm: false },
-            { f: "Device action history + attribution", b: true, g: false, l: false, fm: false },
+            { f: "Device action history (3-day retention)", b: true, g: false, l: false, fm: false },
             { f: "Remote ring", b: true, g: false, l: false, fm: true },
             { f: "Remote locate on demand", b: true, g: "partial", l: false, fm: "partial" },
             { f: "Force-refresh device sync", b: true, g: false, l: false, fm: false },
