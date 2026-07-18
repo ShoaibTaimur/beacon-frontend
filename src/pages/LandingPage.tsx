@@ -356,12 +356,18 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative mx-auto max-w-7xl px-6 pt-28 pb-24 sm:pt-36">
         <div className={`mx-auto max-w-3xl text-center ${mounted ? "animate-beacon-slide-up" : "opacity-0"}`}>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300 backdrop-blur">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping-slow rounded-full bg-cyan-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
-            </span>
-            Live tracking for Android
+          <div className="mb-6 flex flex-wrap items-center justify-center gap-3">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-slate-300 backdrop-blur animate-beacon-fade-in">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping-slow rounded-full bg-cyan-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-cyan-400" />
+              </span>
+              Live tracking for Android
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-bold text-cyan-300 backdrop-blur shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              New Version Available: v1.0.4
+            </div>
           </div>
           <h1 className="text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl">
             Know where your{" "}
@@ -393,7 +399,7 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/5 px-7 py-3.5 text-sm font-semibold text-cyan-300 backdrop-blur transition-all duration-300 hover:border-cyan-400/60 hover:bg-cyan-500/10 cursor-pointer"
             >
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-              Download APK
+              Download APK (v1.0.4)
             </button>
           </div>
         </div>
