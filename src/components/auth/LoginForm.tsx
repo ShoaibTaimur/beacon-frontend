@@ -4,7 +4,7 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const { login, authError } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -54,9 +54,9 @@ export default function LoginForm() {
         autoComplete="current-password"
       />
 
-      {error && (
+      {(authError || error) && (
         <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm animate-fade-in">
-          {error}
+          {authError || error}
         </div>
       )}
 

@@ -139,6 +139,13 @@ export default function LandingPage() {
         </>
       ),
     },
+    {
+      title: "Support & Bug Reports",
+      desc: "Direct communication channel between users and administrators to report app bugs or request help in real-time.",
+      icon: (
+        <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+      ),
+    },
   ];
 
   return (
@@ -466,7 +473,7 @@ export default function LandingPage() {
           <p className="mt-4 text-slate-400">Every surface — from the map to the battery meter — is engineered to be glanceable, responsive, and quietly beautiful.</p>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((f, i) => (
             <div
               key={f.title}

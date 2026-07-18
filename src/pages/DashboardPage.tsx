@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Navbar from "../components/layout/Navbar";
 import DeviceList from "../components/dashboard/DeviceList";
 import IncomingInvites from "../components/dashboard/IncomingInvites";
+import SupportPanel from "../components/dashboard/SupportPanel";
 import { useAuth } from "../contexts/AuthContext";
 import {
   getConfig,
@@ -243,6 +244,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [adminEmail, setAdminEmail] = useState("mitashoaib@gmail.com");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showSupport, setShowSupport] = useState(false);
 
   useEffect(() => {
     const fetchAdminStatus = async () => {
@@ -324,18 +326,34 @@ export default function DashboardPage() {
         {isAdmin && <AdminApkSettings currentAdminEmail={adminEmail} />}
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-white tracking-tight">
-            My Devices
-          </h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Manage and monitor your registered devices
-          </p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-white tracking-tight">
+              My Devices
+            </h1>
+            <p className="mt-1 text-sm text-slate-400">
+              Manage and monitor your registered devices
+            </p>
+          </div>
+          {!isAdmin && (
+            <button
+              onClick={() => setShowSupport(true)}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 text-cyan-300 font-semibold text-sm transition-all duration-300 cursor-pointer shadow-lg shadow-cyan-500/5 active:scale-95"
+            >
+              <svg className="w-4.5 h-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              Support & Bugs
+            </button>
+          )}
         </div>
 
         {/* Device grid */}
         <DeviceList />
       </main>
+
+      {/* Support Drawer */}
+      <SupportPanel isOpen={showSupport} onClose={() => setShowSupport(false)} />
 
       {/* Ambient background */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">

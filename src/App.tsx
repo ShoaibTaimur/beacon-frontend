@@ -2,12 +2,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import AdminRoute from './components/layout/AdminRoute';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import SharedDevicesPage from './pages/SharedDevicesPage';
 import MapTimelinePage from './pages/MapTimelinePage';
 import LandingPage from './pages/LandingPage';
+import AdminPage from './pages/AdminPage';
 
 function VercelAnalytics() {
   const location = useLocation();
@@ -36,6 +38,14 @@ function App() {
               <ProtectedRoute>
                 <SharedDevicesPage />
               </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminPage />
+              </AdminRoute>
             }
           />
           <Route path="/devices/:id/map" element={<MapTimelinePage />} />

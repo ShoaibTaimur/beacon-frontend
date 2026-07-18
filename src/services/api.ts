@@ -147,4 +147,24 @@ export const updateConfig = (key: string, value: any): Promise<AxiosResponse<{ s
 export const downloadApk = (password: string): Promise<AxiosResponse<Blob>> =>
   api.post('/config/download-apk', { password }, { responseType: 'blob' });
 
+// Admin APIs
+export const getAdminUsers = (): Promise<AxiosResponse<{ success: boolean; users: any[] }>> =>
+  api.get('/admin/users');
+
+export const blockAdminUser = (userId: string, data: { isBlocked: boolean; durationMinutes?: number | null }): Promise<AxiosResponse<{ success: boolean; message: string; user: any }>> =>
+  api.post(`/admin/users/${userId}/block`, data);
+
+// Support APIs
+export const sendSupportMessage = (message: string): Promise<AxiosResponse<{ success: boolean; data: any }>> =>
+  api.post('/support', { message });
+
+export const getMySupportMessages = (): Promise<AxiosResponse<{ success: boolean; messages: any[] }>> =>
+  api.get('/support/my');
+
+export const getAdminSupportMessages = (): Promise<AxiosResponse<{ success: boolean; messages: any[] }>> =>
+  api.get('/admin/support');
+
+export const replyToSupportMessage = (messageId: string, reply: string): Promise<AxiosResponse<{ success: boolean; data: any }>> =>
+  api.post(`/admin/support/${messageId}/reply`, { reply });
+
 export default api;

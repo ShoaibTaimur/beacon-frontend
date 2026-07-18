@@ -37,6 +37,11 @@ The goal of Project Beacon is to provide users with a secure, real-time dashboar
 - **No Data Gaps**: Location timeline history is reconstructed accurately on the dashboard map even after extended offline periods.
 - **Fast-fail Networking**: OkHttp timeouts reduced to 8 s connect / 12 s read to prevent polling cycles from blocking on poor SIM connectivity.
 
+### 6. Support & Bug Reporting Box
+- **User Dashboard Panel**: Normal users can submit queries or bug reports through a dedicated sliding drawer.
+- **Admin Moderation Shield**: Administrators can view incoming tickets, see user details, filter tickets by "Pending" or "Answered", and submit replies in-line.
+- **Real-Time History Statuses**: Users receive instant feedback when an admin responds, with visual "Pending"/"Answered" badges and reply cards.
+
 ---
 
 ## Screenshots

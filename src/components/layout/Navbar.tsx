@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { getIncomingInvites } from '../../services/api';
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [inviteCount, setInviteCount] = useState<number>(0);
@@ -124,6 +124,27 @@ export default function Navbar() {
               Shared with me
             </span>
           </div>
+
+          {/* Admin Panel */}
+          {profile?.role === 'admin' && (
+            <div className="group relative">
+              <button
+                onClick={() => navigate('/admin')}
+                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 ease-out hover:scale-125 hover:-translate-y-1 active:scale-95 cursor-pointer ${
+                  location.pathname === '/admin'
+                    ? 'bg-red-500/20 border border-red-400/40 text-red-400 shadow-[0_0_10px_rgba(239,68,68,0.2)]'
+                    : 'bg-white/[0.03] border border-white/5 text-slate-400 hover:text-red-400 hover:bg-red-500/10'
+                }`}
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.57-.598-3.75h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+              </button>
+              <span className="absolute bottom-full mb-2.5 left-1/2 -translate-x-1/2 opacity-0 pointer-events-none group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-200 bg-slate-950/95 border border-white/10 px-2 py-1 rounded text-[9px] font-bold text-white whitespace-nowrap shadow-xl z-50">
+                Admin Panel
+              </span>
+            </div>
+          )}
 
           <div className="h-4 w-[1px] bg-white/10" />
 
