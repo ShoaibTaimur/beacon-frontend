@@ -10,6 +10,7 @@ import {
   refreshDevice,
 } from "../services/api";
 import Loader from "../components/ui/Loader";
+import HistoryPanel from "../components/dashboard/HistoryPanel";
 
 interface SharedDeviceListItem {
   id: string;
