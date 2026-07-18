@@ -10,7 +10,7 @@ The goal of Project Beacon is to provide users with a secure, real-time dashboar
 ## Features
 
 ### 1. Real-Time Vitals Monitoring
-- **Battery Status**: Percentage tracker with a dynamic charging state animation.
+- **Battery Status**: Percentage tracker with a dynamic charging state animation
 - **Hardware Utilizations**: Interactive storage & RAM utilization gauges.
 - **Hardware Profile**: Active monitoring of system sound modes (Normal, Vibrate, Silent).
 - **Connection Indicator**: Instant visual feedback of the device's online/offline network connection.
