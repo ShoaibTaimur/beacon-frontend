@@ -4,7 +4,7 @@ import { Device, SharedDevice, Invite, TrustLink, LocationLog, HistoryLog } from
 
 const getBaseURL = (): string => {
   if (window.location.hostname === 'beacon.taimur.dev') {
-    return 'https://beacon-backend-two.vercel.app/api';
+    return 'https://beacon-server.taimur.dev/api';
   }
   const envUrl = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000/api';
   if (window.location.hostname === '10.0.2.2') {
