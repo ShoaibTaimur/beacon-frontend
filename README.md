@@ -31,6 +31,12 @@ The goal of Project Beacon is to provide users with a secure, real-time dashboar
   - **Manager / Finder**: Authorized to dispatch remote actions and track location timelines.
   - **Viewer**: Read-only dashboard panel access to vitals.
 
+### 5. Offline Location Queue
+- **Disconnection Resilience**: The Android companion app continues collecting GPS coordinates locally (using Room / SQLite) during periods of no internet connectivity (e.g. poor SIM signal, tunnels, rural areas).
+- **Automatic Sync on Reconnect**: When connectivity is restored, all queued locations are flushed to the server in chronological order, each stamped with the exact time they were collected on-device — not the upload time.
+- **No Data Gaps**: Location timeline history is reconstructed accurately on the dashboard map even after extended offline periods.
+- **Fast-fail Networking**: OkHttp timeouts reduced to 8 s connect / 12 s read to prevent polling cycles from blocking on poor SIM connectivity.
+
 ---
 
 ## Screenshots

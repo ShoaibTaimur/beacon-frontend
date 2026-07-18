@@ -130,6 +130,15 @@ export default function LandingPage() {
         <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9a6 6 0 0 0-12 0v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m3.714 0a24.255 24.255 0 0 1-3.714 0m3.714 0a3 3 0 1 1-3.714 0" />
       ),
     },
+    {
+      title: "Offline Location Queue",
+      desc: "GPS points collected locally during poor SIM coverage, then flushed with original timestamps when connectivity returns — zero history gaps.",
+      icon: (
+        <>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 7.5L7.5 3m0 0L12 7.5M7.5 3v13.5m13.5 0L16.5 21m0 0L12 16.5m4.5 4.5V7.5" />
+        </>
+      ),
+    },
   ];
 
   return (
@@ -451,7 +460,7 @@ export default function LandingPage() {
           <p className="mt-4 text-slate-400">Every surface — from the map to the battery meter — is engineered to be glanceable, responsive, and quietly beautiful.</p>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {features.map((f, i) => (
             <div
               key={f.title}
@@ -819,6 +828,7 @@ export default function LandingPage() {
             { f: "Tracking + commands in one screen", b: true, g: false, l: false, fm: false },
             { f: "Sleek dark & light map modes", b: true, g: false, l: false, fm: false },
             { f: "No ads, no data resale", b: true, g: true, l: false, fm: true },
+            { f: "Offline location queue (sync on reconnect)", b: true, g: false, l: false, fm: false },
           ] as const;
 
           const Cell = ({ v }: { v: boolean | "partial" }) => {
