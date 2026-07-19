@@ -3,7 +3,7 @@
 Project Beacon is a secure, real-time full-stack companion tracking and control system for Android devices. This repository contains the Web Dashboard frontend built with React, Vite, and Tailwind CSS.
 
 ## Goal
-The goal of Project Beacon is to provide users with a secure, real-time dashboard to monitor device vitals (battery, storage, RAM, sound profile), track location history, and dispatch remote action triggers (ringing silent devices, pulling instant logs, or tracking real-time coordinates) with granular sharing controls.
+The goal of Project Beacon is to provide users with a secure, real-time dashboard to monitor device vitals (battery, storage, RAM, sound profile), track location history, and dispatch remote action triggers (ringing silent devices, pulling instant logs, or tracking real-time coordinates) with granular sharing controls
 
 ---
 
